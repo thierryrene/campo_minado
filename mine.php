@@ -9,12 +9,36 @@ require 'composer/vendor/autoload.php';
 	<meta charset="UTF-8">
 	<title></title>
 	<style type="text/css">
+		* {
+			font-family: arial;
+		}
 		td {
-			padding: 15px;
 			background-color: #ccc;
+			padding: 20px;
+			text-align: center;
 		}
 		table td {
-			border: solid 5px #eee;
+			/*border: solid 5px #eee;*/
+		}
+		.button {
+			padding: 10px 15px;
+			background-color: #89ba16;
+			border: 1px solid gray;
+			color: snow;
+			text-decoration: none;
+			font-weight: bold;
+			text-transform: uppercase;
+		}
+
+		.alert {
+			padding: 10px 15px;
+			margin-top: 10px;
+			background-color: gold;
+			text-transform: uppercase;
+			font-weight: bold;
+		}
+		a {
+			text-decoration: none;
 		}
 	</style>
 </head>
@@ -23,6 +47,13 @@ require 'composer/vendor/autoload.php';
 
 	<div align="center" style="margin-top: 100px;">
 
+		<h1>Mine</h1>
+
+		<br>
+
+		<p><a href="mine.php" class="button">New</a></p>
+
+		<br>
 
 		<table border='0'>
 
@@ -30,49 +61,50 @@ require 'composer/vendor/autoload.php';
 		
 				<?php				
 
+					session_start();
+
+					unset($firstMaskArray);
+
 					// valores iniciais
 					$linhas 		= 5;
 					$colunas 		= 5;
-					$bombas 		= 5;
-					$firstMcount 	= 0;
+					$bombas 		= array("@", "@", "@", "@");
+					$bombsCount		= count($bombas);
+					$bombasMedia 	= ceil(($linhas * $colunas) / $bombsCount);
 
 					// valores url
-					$acao 			= !empty($_REQUEST['acao']) ? $_REQUEST['acao'] : '';
+					$acao 			= !empty($_REQUEST['acao']) ? true : false;
 					$clickLinha 	= !empty($_REQUEST['linha']) ? $_REQUEST['linha'] : 0;
 					$clickColuna 	= !empty($_REQUEST['coluna']) ? $_REQUEST['coluna'] : 0;
 
 					// contadores
-					$cellCount = 1;
+					$cellCount 				= 0;
+					$firstMaskArrayCount 	= 0;
 
 					// array que vai abrir a máscara da matriz que vamos utilizar
-					$firstM = array();				
+					$firstMaskArray = array();							
 
 					// criamos a matriz com base nas variáveis linhas e colunas
 					for ($a = 1; $a <= $linhas; $a++) {						
 						echo "<tr>";
 							for($b = 1; $b <= $colunas; $b++) {
 								echo "<td><a href='?acao=true&linha={$a}&coluna={$b}&celula={$cellCount}'>{$cellCount}</a></td>";
-								$firstM[$a][$b] =  $cellCount;
+								$firstMaskArray[$a][$b] =  $cellCount;
 								$cellCount++;
 							}
 						echo "</tr>";
-					}
-
-					// se houver ação de click, apresentar mensagem de qual célula foi clicada
-					if ($_GET['acao']) {
-						session_start();
-						$linha 	= $_GET['linha'];
-						$coluna = $_GET['coluna'];
-						echo "você clicou na linha {$linha}, célula {$coluna}.";
-					}
+					}			
 
 					// matriz mask
-					for ($l = 1; $l <= $linhas; $l++) {
-						for($c = 1; $c <= $colunas; $c++) {
-							$firstM[$l][$c] = null;
-							$firstMcount++;
-						}
-					}					
+					// for ($l = 1; $l <= $linhas; $l++) {
+					// 	for($c = 1; $c <= $colunas; $c++) {
+					// 		$firstMaskArray[$l][$c] = null;
+					// 		$firstMaskArrayCount++;
+					// 	}
+					// }
+
+					// salvamos o jogo na sessão
+					$_SESSION['firstM'] = $firstMaskArray;
 
 				?>
 
@@ -80,13 +112,32 @@ require 'composer/vendor/autoload.php';
 
 		</table>
 
+		<br>
+		<br>
+
+		<?php
+			// se houver ação de click, apresentar mensagem de qual célula foi clicada
+			if ($_GET['acao']) {
+				$linha 	= $_GET['linha'];
+				$coluna = $_GET['coluna'];
+				$celula = $_GET['celula'];
+				echo "<span class='alert'>linha {$linha}, coluna {$coluna}, célula {$celula}</span>";
+				unset($linha, $coluna, $celula);
+			}
+		?>
+
 	</div>
 
 
 	<?php
 
+
+		
+
 		echo "<pre>";
 		r($GLOBALS);
+
+
 
 	?>
 	
