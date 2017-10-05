@@ -1,6 +1,6 @@
 <?php
 
-require 'composer/vendor/autoload.php';
+require '../composer/vendor/autoload.php';
 
 ?>
 <!DOCTYPE html>
@@ -68,9 +68,8 @@ require 'composer/vendor/autoload.php';
 					// valores iniciais
 					$linhas 		= 5;
 					$colunas 		= 5;
-					$bombas 		= array("@", "@", "@", "@");
-					$bombsCount		= count($bombas);
-					$bombasMedia 	= ceil(($linhas * $colunas) / $bombsCount);
+					$bombas 		= 4;
+					$bombasMedia 	= ceil(($linhas * $colunas) / count($bombas));
 
 					// valores url
 					$acao 			= !empty($_REQUEST['acao']) ? true : false;
@@ -82,14 +81,24 @@ require 'composer/vendor/autoload.php';
 					$firstMaskArrayCount 	= 0;
 
 					// array que vai abrir a máscara da matriz que vamos utilizar
-					$firstMaskArray = array();							
+					$firstMaskArray = array();			
+
+					foreach ($bombas as $bomba) {
+						
+						for ($a = 1; $a < $bombasMedia; $a++) {
+							$firstMaskArray[] = $bomba;
+							echo $bomba;
+						}
+					}
+
+					shuffle($firstMaskArray);
 
 					// criamos a matriz com base nas variáveis linhas e colunas
 					for ($a = 1; $a <= $linhas; $a++) {						
 						echo "<tr>";
 							for($b = 1; $b <= $colunas; $b++) {
 								echo "<td><a href='?acao=true&linha={$a}&coluna={$b}&celula={$cellCount}'>{$cellCount}</a></td>";
-								$firstMaskArray[$a][$b] =  $cellCount;
+								$firstMaskArray[$a][$b] = $cellCount;
 								$cellCount++;
 							}
 						echo "</tr>";
