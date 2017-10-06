@@ -63,13 +63,12 @@ require '../composer/vendor/autoload.php';
 
 					session_start();
 
-					unset($firstMaskArray);
-
 					// valores iniciais
 					$linhas 		= 5;
 					$colunas 		= 5;
 					$bombas 		= 4;
-					$bombasMedia 	= ceil(($linhas * $colunas) / count($bombas));
+					$bomba 			= "@";
+					$bombasMedia 	= ceil(($linhas * $colunas) / $bombas);
 
 					// valores url
 					$acao 			= !empty($_REQUEST['acao']) ? true : false;
@@ -77,21 +76,10 @@ require '../composer/vendor/autoload.php';
 					$clickColuna 	= !empty($_REQUEST['coluna']) ? $_REQUEST['coluna'] : 0;
 
 					// contadores
-					$cellCount 				= 0;
-					$firstMaskArrayCount 	= 0;
+					$cellCount 				= 0;				
 
 					// array que vai abrir a máscara da matriz que vamos utilizar
-					$firstMaskArray = array();			
-
-					foreach ($bombas as $bomba) {
-						
-						for ($a = 1; $a < $bombasMedia; $a++) {
-							$firstMaskArray[] = $bomba;
-							echo $bomba;
-						}
-					}
-
-					shuffle($firstMaskArray);
+					$firstMaskArray = array();
 
 					// criamos a matriz com base nas variáveis linhas e colunas
 					for ($a = 1; $a <= $linhas; $a++) {						
@@ -102,19 +90,12 @@ require '../composer/vendor/autoload.php';
 								$cellCount++;
 							}
 						echo "</tr>";
-					}			
-
-					// matriz mask
-					// for ($l = 1; $l <= $linhas; $l++) {
-					// 	for($c = 1; $c <= $colunas; $c++) {
-					// 		$firstMaskArray[$l][$c] = null;
-					// 		$firstMaskArrayCount++;
-					// 	}
-					// }
+					}
 
 					// salvamos o jogo na sessão
-					$_SESSION['firstM'] = $firstMaskArray;
-
+					// $_SESSION['firstM'] = $firstMaskArray;
+					// session_destroy($_SESSION);
+					
 				?>
 
 			</tr>
@@ -138,15 +119,10 @@ require '../composer/vendor/autoload.php';
 	</div>
 
 
-	<?php
-
-
-		
+	<?php	
 
 		echo "<pre>";
 		r($GLOBALS);
-
-
 
 	?>
 	
