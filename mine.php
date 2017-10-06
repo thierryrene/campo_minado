@@ -70,12 +70,25 @@ require '../composer/vendor/autoload.php';
 					$bomba 			= "@";
 
 					// valores url
-					$acao 			= !empty($_REQUEST['acao']) ? $_REQUEST['acao'] : '';
-					$clickLinha 	= !empty($_REQUEST['linha']) ? $_REQUEST['linha'] : 0;
-					$clickColuna 	= !empty($_REQUEST['coluna']) ? $_REQUEST['coluna'] : 0;
+					$acao 			= !empty($_REQUEST['acao']) ? $_REQUEST['acao'] : null;
+					$clickLinha 	= !empty($_REQUEST['linha']) ? $_REQUEST['linha'] : null;
+					$clickColuna 	= !empty($_REQUEST['coluna']) ? $_REQUEST['coluna'] : null;
+					$cell 			= !empty($_REQUEST['celula']) ? $_REQUEST['celula'] : null;
 
-					// contadores
-					$cellCount = 0;					
+					// contador para total de células na matriz
+					$cellCount = 0;		
+
+					// array que vai abrir a máscara da matriz que vamos utilizar
+					$onPageMask = array();
+
+					// criamos a matriz com base nas variáveis linhas e colunas
+					for ($a = 1; $a <= $linhas; $a++) {
+						for($b = 1; $b <= $colunas; $b++) {
+							// criamos a matriz na variável $onPageMask
+							$onPageMask[$a][$b] = $cellCount;
+							$cellCount++;
+						}
+					}			
 
 					// cópia da primeira matriz criada
 					$finalArray = $onPageMask;						
@@ -83,48 +96,66 @@ require '../composer/vendor/autoload.php';
 					// criar o array que vai armezenar as bombas
 					$vetorBombas = array();
 
-					// criamos um vetor com a média de bombas
-					for ($a = 1; $a <= $cellCount; $a++) {
-						if ($a <= $bombas) {
-							$vetorBombas[$a] = $bomba;							
-						} else {
-							$vetorBombas[$a] = null;
-						}						
-					}
+					if ($acao != 'click' || $acao == '') {				
 
-					// randomizamos os valores do vetor
-					shuffle($vetorBombas);
-
-					// iniciado o contador para o for abaixo
-					$tot = 1;
-
-					// for para recriar matriz com as bombas
-					for($l = 1; $l <= $linhas; $l++) {
-						for($c = 1; $c <= $colunas; $c++) {
-
-							// definimos os valores de cada célula do array com base no vetor de bombas randomizado
-							$finalArray[$l][$c] = $vetorBombas[$tot];							
-							
-							// utilizamos um contador para incluir os valores de mesmo indíce na matriz
-							$tot++;
-
+						// criamos um vetor com a média de bombas
+						for ($a = 1; $a <= $cellCount; $a++) {
+							if ($a <= $bombas) {
+								$vetorBombas[$a] = $bomba;							
+							} else {
+								$vetorBombas[$a] = null;
+							}						
 						}
-					}
 
-					// array que vai abrir a máscara da matriz que vamos utilizar
-					$onPageMask = array();
+						// randomizamos os valores do vetor
+						shuffle($vetorBombas);
 
-					// criamos a matriz com base nas variáveis linhas e colunas
-					for ($a = 1; $a <= $linhas; $a++) {						
-						echo "<tr>";
-							for($b = 1; $b <= $colunas; $b++) {
-								echo "<td><a href='?acao=click&linha={$a}&coluna={$b}&celula={$cellCount}'>{$cellCount}</a></td>";
-								// criamos a matriz na variável $onPageMask
-								$onPageMask[$a][$b] = $cellCount;
-								$cellCount++;
+						// iniciado o contador para o for abaixo
+						$tot = 1;
+
+						// for para recriar matriz com as bombas
+						for($l = 1; $l <= $linhas; $l++) {
+							for($c = 1; $c <= $colunas; $c++) {
+
+								// definimos os valores de cada célula do array com base no vetor de bombas randomizado
+								$finalArray[$l][$c] = $vetorBombas[$tot];							
+								
+								// utilizamos um contador para incluir os valores de mesmo indíce na matriz
+								$tot++;
+
 							}
-						echo "</tr>";
+						}				
+
+						$count = 1;
+
+						// for ($l = 1; $l <= $linhas; $l++) {
+						// 	echo "<tr>";
+						// 		foreach ($finalArray[$l] as $item) {
+						// 			if ($item != '@') $item = 'x';
+						// 			echo "<td>
+						// 					<a href='?acao=click&linha={$l}&coluna={$c}&celula={$count}'>{$item}</a>
+						// 				  </td>";
+						// 			$onPageMask[$a][$b] = $cellCount;
+						// 			$count++;
+						// 		}
+						// 	echo "</tr>";
+						// }
+
+						$_SESSION['finalArray'] = $finalArray;
+
+					} else {
+
+						$linha 	= $_REQUEST['linha'];
+						$coluna = $_REQUEST['coluna'];
+						$celula = $_REQUEST['celula'];
+
+						echo "<span class='alert'>linha {$linha}, coluna {$coluna}, célula {$celula}</span>";
+
+						unset($linha, $coluna, $celula);
+
 					}
+
+					unset($vetorBombas, $a, $b, $onPageMask);				
 					
 				?>
 
@@ -135,22 +166,28 @@ require '../composer/vendor/autoload.php';
 		<br>
 		<br>
 
-		<?php
+		<table>	
 
-			// se houver ação de click, apresentar mensagem de qual célula foi clicada
-			if ($_REQUEST['acao']) {
-
-				$linha 	= $_REQUEST['linha'];
-				$coluna = $_REQUEST['coluna'];
-				$celula = $_REQUEST['celula'];
-
-				echo "<span class='alert'>linha {$linha}, coluna {$coluna}, célula {$celula}</span>";
-
+			<?php
+								
+				for ($l = 1; $l <= $linhas; $l++) {
+					echo "<tr>";
+						foreach ($finalArray[$l] as $item) {
+							if ($item != '@') $item = 'x';
+							echo "<td>
+									<a href='?acao=click&linha={$l}&coluna={$c}&celula={$count}'>{$item}</a>
+								  </td>";
+							$onPageMask[$a][$b] = $cellCount;
+							$count++;
+						}
+					echo "</tr>";
+				}
+				
 				unset($linha, $coluna, $celula);
+			
+			?>
 
-			}
-
-		?>
+		</table>
 
 	</div>
 
