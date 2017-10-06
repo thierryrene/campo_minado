@@ -64,9 +64,9 @@ require '../composer/vendor/autoload.php';
 					session_start();
 
 					// valores iniciais
-					$linhas 		= 6;
-					$colunas 		= 6;
-					$bombas 		= 8;
+					$linhas 		= 10;
+					$colunas 		= 10;
+					$bombas 		= 10;
 					$bomba 			= "@";
 
 					// valores url
@@ -128,22 +128,24 @@ require '../composer/vendor/autoload.php';
 
 						$count = 1;
 
-						// for ($l = 1; $l <= $linhas; $l++) {
-						// 	echo "<tr>";
-						// 		foreach ($finalArray[$l] as $item) {
-						// 			if ($item != '@') $item = 'x';
-						// 			echo "<td>
-						// 					<a href='?acao=click&linha={$l}&coluna={$c}&celula={$count}'>{$item}</a>
-						// 				  </td>";
-						// 			$onPageMask[$a][$b] = $cellCount;
-						// 			$count++;
-						// 		}
-						// 	echo "</tr>";
-						// }
+						for ($l = 1; $l <= $linhas; $l++) {
+							echo "<tr>";
+								foreach ($finalArray[$l] as $item) {
+									if ($item != '@') $item = 'x';
+									echo "<td>
+											<a href='?acao=click&linha={$l}&coluna={$c}&celula={$count}'>{$item}</a>
+										  </td>";
+									$onPageMask[$a][$b] = $cellCount;
+									$count++;
+								}
+							echo "</tr>";
+						}
 
 						$_SESSION['finalArray'] = $finalArray;
 
 					} else {
+
+						$finalArray = $_SESSION['finalArray'];
 
 						$linha 	= $_REQUEST['linha'];
 						$coluna = $_REQUEST['coluna'];
@@ -151,11 +153,11 @@ require '../composer/vendor/autoload.php';
 
 						echo "<span class='alert'>linha {$linha}, coluna {$coluna}, célula {$celula}</span>";
 
-						unset($linha, $coluna, $celula);
+						// unset($linha, $coluna, $celula);
 
 					}
 
-					unset($vetorBombas, $a, $b, $onPageMask);				
+					// unset($vetorBombas, $a, $b, $onPageMask);				
 					
 				?>
 
@@ -170,20 +172,20 @@ require '../composer/vendor/autoload.php';
 
 			<?php
 								
-				for ($l = 1; $l <= $linhas; $l++) {
-					echo "<tr>";
-						foreach ($finalArray[$l] as $item) {
-							if ($item != '@') $item = 'x';
-							echo "<td>
-									<a href='?acao=click&linha={$l}&coluna={$c}&celula={$count}'>{$item}</a>
-								  </td>";
-							$onPageMask[$a][$b] = $cellCount;
-							$count++;
-						}
-					echo "</tr>";
-				}
+				// for ($l = 1; $l <= $linhas; $l++) {
+				// 	echo "<tr>";
+				// 		foreach ($finalArray[$l] as $item) {
+				// 			if ($item != '@') $item = 'x';
+				// 			echo "<td>
+				// 					<a href='?acao=click&linha={$l}&coluna={$c}&celula={$count}'>{$item}</a>
+				// 				  </td>";
+				// 			$onPageMask[$a][$b] = $cellCount;
+				// 			$count++;
+				// 		}
+				// 	echo "</tr>";
+				// }
 				
-				unset($linha, $coluna, $celula);
+				// unset($linha, $coluna, $celula);
 			
 			?>
 
