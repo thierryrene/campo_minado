@@ -65,11 +65,11 @@ require '../composer/vendor/autoload.php';
 
 					// valores iniciais
 					$linhas 		= 10;
-					$colunas 		= 10;
+					$colunas 		= $linhas;
 					$bombas 		= 10;
 					$bomba 			= "@";
 
-					// valores url
+					// valores url que vamos utilizar para manipular o programa através da URL
 					$acao 			= !empty($_REQUEST['acao']) ? $_REQUEST['acao'] : null;
 					$clickLinha 	= !empty($_REQUEST['linha']) ? $_REQUEST['linha'] : null;
 					$clickColuna 	= !empty($_REQUEST['coluna']) ? $_REQUEST['coluna'] : null;
@@ -85,6 +85,7 @@ require '../composer/vendor/autoload.php';
 					for ($a = 1; $a <= $linhas; $a++) {
 						for($b = 1; $b <= $colunas; $b++) {
 							// criamos a matriz na variável $onPageMask
+							// utilizamos um contador para popular as células da matriz
 							$onPageMask[$a][$b] = $cellCount;
 							$cellCount++;
 						}
@@ -116,13 +117,10 @@ require '../composer/vendor/autoload.php';
 						// for para recriar matriz com as bombas
 						for($l = 1; $l <= $linhas; $l++) {
 							for($c = 1; $c <= $colunas; $c++) {
-
 								// definimos os valores de cada célula do array com base no vetor de bombas randomizado
-								$finalArray[$l][$c] = $vetorBombas[$tot];							
-								
+								$finalArray[$l][$c] = $vetorBombas[$tot];								
 								// utilizamos um contador para incluir os valores de mesmo indíce na matriz
 								$tot++;
-
 							}
 						}				
 
@@ -132,10 +130,8 @@ require '../composer/vendor/autoload.php';
 							echo "<tr>";
 								foreach ($finalArray[$l] as $item) {
 									if ($item != '@') $item = 'x';
-									echo "<td>
-											<a href='?acao=click&linha={$l}&coluna={$c}&celula={$count}'>{$item}</a>
-										  </td>";
-									$onPageMask[$a][$b] = $cellCount;
+									echo "<td onclick='javascript: windows.location=\"mine.php?acao=click&linha={$l}&coluna={$c}&celula={$count}\"' style='padding: 15px;'></td>";
+									$onPageMask[$l][$c] = $cellCount;
 									$count++;
 								}
 							echo "</tr>";
@@ -145,13 +141,13 @@ require '../composer/vendor/autoload.php';
 
 					} else {
 
-						$finalArray = $_SESSION['finalArray'];
+						// $finalArray = $_SESSION['finalArray'];
 
-						$linha 	= $_REQUEST['linha'];
-						$coluna = $_REQUEST['coluna'];
-						$celula = $_REQUEST['celula'];
+						// $linha 	= $_REQUEST['linha'];
+						// $coluna = $_REQUEST['coluna'];
+						// $celula = $_REQUEST['celula'];
 
-						echo "<span class='alert'>linha {$linha}, coluna {$coluna}, célula {$celula}</span>";
+						// echo "<span class='alert'>linha {$linha}, coluna {$coluna}, célula {$celula}</span>";
 
 						// unset($linha, $coluna, $celula);
 
@@ -172,18 +168,18 @@ require '../composer/vendor/autoload.php';
 
 			<?php
 								
-				// for ($l = 1; $l <= $linhas; $l++) {
-				// 	echo "<tr>";
-				// 		foreach ($finalArray[$l] as $item) {
-				// 			if ($item != '@') $item = 'x';
-				// 			echo "<td>
-				// 					<a href='?acao=click&linha={$l}&coluna={$c}&celula={$count}'>{$item}</a>
-				// 				  </td>";
-				// 			$onPageMask[$a][$b] = $cellCount;
-				// 			$count++;
-				// 		}
-				// 	echo "</tr>";
-				// }
+				for ($l = 1; $l <= $linhas; $l++) {
+					echo "<tr>";
+						foreach ($finalArray[$l] as $item) {
+							if ($item != '@') $item = 'x';
+							echo "<td>
+									<a href='?acao=click&linha={$l}&coluna={$c}&celula={$count}'>{$item}</a>
+								  </td>";
+							$onPageMask[$a][$b] = $cellCount;
+							$count++;
+						}
+					echo "</tr>";
+				}
 				
 				// unset($linha, $coluna, $celula);
 			
