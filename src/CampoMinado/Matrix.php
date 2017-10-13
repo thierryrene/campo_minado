@@ -6,6 +6,11 @@ use Exception;
 
 class Matrix
 {
+	const BOMB  = 'bomb';
+	const CLEAR = 'clear';
+	const HIDE  = 'hide';
+
+
 	public function generate($lines, $bombs)
 	{
 		if ($bombs <= 0 || $lines <= 0) {
@@ -28,9 +33,9 @@ class Matrix
 			$column = mt_rand(0, $max);
 			$line   = mt_rand(0, $max);
 
-			if (!$matrix[$column][$line]) {
+			if ($matrix[$column][$line] == self::HIDE) {
 
-				$matrix[$column][$line] = 1;
+				$matrix[$column][$line] = self::BOMB;
 				$total++;
 
 			}
@@ -49,7 +54,7 @@ class Matrix
 			if (empty($matrix[$c])) $matrix[$c] = [];
 
 			for ($l=0; $l < $lines; $l++) {
-				$matrix[$c][$l] = 0;
+				$matrix[$c][$l] = self::HIDE;
 			}
 
 		}

@@ -2,97 +2,41 @@
 
 namespace CampoMinado;
 
+use CampoMinado\Filter\Down;
+use CampoMinado\Filter\Up;
+
 class ClearMatrix
 {
 	private $calcule;
+	private $down;
+	private $up;
 
 	public function __construct()
 	{
 		$this->calcule = new CalculeMatrix();
+		$this->up      = new Up();
+		$this->down    = new Down();
 	}
 
-	public function cleaning(array $matrix, $line, $column)
-	{
+	public function cleaning(array $matrix, int $line, int $column): array
+	{		
 		$dimensions = $this->calcule->getDimensions($matrix, $line, $column);
-		$matrix     = $this->search($matrix, $line, $column, $dimensions);
-
+		$matrix     = $this->search($matrix, ['row' => $line, 'column' => $column], $dimensions);
 		die(var_dump($matrix));
+		return $matrix;
 	}
 
-	private function search(array $matrix, $line, $column, array $dimensions)
+	private function search(array $matrix, array $native, array $dimensions): array
 	{
 		$row = $dimensions['line'];
 
 		foreach ($dimensions['column'] as $col) {
-			$matrix = $this->up($matrix, $row['max'], $line, $column, $col);
-			$matrix = $this->down($matrix, $row['min'], $line, $column, $col);
-		}
 
-		return $matrix;
-	}
-
-	private function up(array $matrix, $max, $line, $column, $col)
-	{
-		for ($line; $line <= $max; $line++) {
-
-			if (!isset($matrix[$line])) continue;
-
-
-			if ($col < $column) {
-
-				for ($i=$col; $i < $column; $i++) {
-
-					if (isset($matrix[$line][$i]) && $matrix[$line][$i] != 1) {
-						$matrix[$line][$i] = null;
-					}
-
-				}
-
-				continue;
-			}
-
-			for ($i=$column; $i < $col; $i++) {
-
-				if (isset($matrix[$line][$i]) && $matrix[$line][$i] != 1) {
-					$matrix[$line][$i] = null;
-				}
-			}
+			$matrix = $this->up->filter($matrix, ['column' => $col, 'row' => $row['max']], $native);
+			$matrix = $this->down->filter($matrix, ['column' => $col, 'row' => $row['min']], $native);
 
 		}
 
 		return $matrix;
 	}
-
-	private function down(array $matrix, $max, $line, $column, $col)
-	{
-		for ($line; $line >= $max; $line--) {
-
-			if (!isset($matrix[$line])) continue;
-
-
-			if ($col < $column) {
-
-				for ($i=$col; $i < $column; $i++) {
-
-					if (isset($matrix[$line][$i]) && $matrix[$line][$i] != 1) {
-						$matrix[$line][$i] = null;
-					}
-
-				}
-
-				continue;
-			}
-
-			for ($i=$column; $i < $col; $i++) {
-
-				if (isset($matrix[$line][$i]) && $matrix[$line][$i] != 1) {
-					$matrix[$line][$i] = null;
-				}
-			}
-
-		}
-
-		return $matrix;
-	}
-
 }
