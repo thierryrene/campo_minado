@@ -122,7 +122,7 @@ if (empty($_SESSION['matrix'])) {
 
 						foreach ($row as $c => $column) {	
 							
-							$item = '';
+							$item = 'x';
 							if (Matrix::CLEAR == $column) {
 								$item = 'c';
 							}
