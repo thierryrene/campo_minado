@@ -18,10 +18,12 @@ class CalculeMatrix
 
 	private function calcule($total, $value)
 	{
-		$middle = (int) floor( $total / 2 ) - 1;
+		$middle = (int) floor( $total / 3 ) - 1;
+
 
 		$max = $value + $middle;
 		$min = $value - $middle;
+		$min = $min < 0 ? 0 : $min;
 
 		return compact('min', 'max');
 	}

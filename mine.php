@@ -77,7 +77,7 @@ if (empty($_SESSION['matrix'])) {
 
 	
 					if ($acao == 'click' ) {				
-
+						echo '<pre>';
 						$success = $clear->try($_SESSION['matrix'], $linha, $column);
 						
 						if (!$success['success']) {
@@ -124,7 +124,7 @@ if (empty($_SESSION['matrix'])) {
 							
 							$item = '';
 							if (Matrix::CLEAR == $column) {
-								$item = 'clear';
+								$item = 'c';
 							}
 
 							echo "<td onclick='javascript: window.location=\"mine.php?acao=click&linha={$r}&coluna={$c}\";' style='padding: 15px;'>".$item."</td>";

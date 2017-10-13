@@ -20,6 +20,8 @@ class ClearMatrix
 
 	public function cleaning(array $matrix, int $line, int $column): array
 	{		
+		$matrix[$line][$column] = Matrix::CLEAR;
+
 		$dimensions = $this->calcule->getDimensions($matrix, $line, $column);
 		$matrix     = $this->search($matrix, ['row' => $line, 'column' => $column], $dimensions);
 		

@@ -10,18 +10,25 @@ class Down
 	{
 		$line = $radio['row'];
 
-		for ($line; $line >= $select['row']; $line--) {
+		for ($line; $line > $select['row']; $line--) {
 			
 			if (!isset($matrix[$line])) continue;
 			
 			if ($select['column'] > $radio['column']) {
 
-				$matrix = $this->smallColumn($matrix, $line, $select['column'], $radio['column']);
+				$response = $this->smallColumn($matrix, $line, $select['column'], $radio['column']);
+				$matrix   = $response['matrix'];
+
+				if (!$response['success']) break;
+
 				continue;
 
 			}
 
-			$matrix = $this->largeColumn($matrix, $line, $select['column'], $radio['column']);
+			$response = $this->largeColumn($matrix, $line, $select['column'], $radio['column']);
+			$matrix   = $response['matrix'];
+
+			if (!$response['success']) break;
 
 		}
 
@@ -30,7 +37,8 @@ class Down
 
 	private function largeColumn(array $matrix, int $line, int $column, int $limit): array
 	{
-		for ($column; $column <= $limit; $column++) {
+		$success = true;
+		for ($column; $column < $limit; $column++) {
 
 			if ($column < 0) continue;
 			
@@ -41,19 +49,24 @@ class Down
 			
 			}
 			
+			$success = false;
 			break;
 
 		}
-
-		return $matrix;
+		
+		return [
+			'success' => $success, 
+			'matrix'  => $matrix
+		];
 	}
 
 	private function smallColumn(array $matrix, int $line, int $column, int $limit): array
 	{
-		for ($column; $column >= $limit; $column--) {
+		$success = true;
+		for ($column; $column > $limit; $column--) {
 
 			if ($column < 0) continue;
-	
+			
 			if (isset($matrix[$line][$column]) && $matrix[$line][$column] != Matrix::BOMB) {
 			
 				$matrix[$line][$column] = MATRIX::CLEAR;
@@ -61,9 +74,13 @@ class Down
 			
 			}
 			
+			$success = false;
 			break;
 		}
-
-		return $matrix;
+		
+		return [
+			'success' => $success, 
+			'matrix'  => $matrix
+		];
 	}
 }

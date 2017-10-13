@@ -10,7 +10,7 @@ class Up
 	{
 		$line = $radio['row'];
 		
-		for ($line; $line <= $select['row']; $line++) {
+		for ($line; $line < $select['row']; $line++) {
 
 			if (!isset($matrix[$line])) continue;
 
@@ -33,7 +33,7 @@ class Up
 		for ($column; $column <= $limit; $column++) {
 
 			if ($column < 0) continue;
-
+			
 			if (isset($matrix[$line][$column]) && $matrix[$line][$column] != Matrix::BOMB) {
 			
 				$matrix[$line][$column] = MATRIX::CLEAR;
@@ -43,15 +43,16 @@ class Up
 			
 			break;
 		}
-
+		
 		return $matrix;
 	}
 
-	private function smallColumn(array $matrix, int $line, int $column, int $limit): array
+	private function smallColumn(array $matrix, int $line, int $limit, int $column): array
 	{
-		for ($column; $column >= $limit; $column--) {
+		for ($column; $column <= $limit; $column++) {
 
 			if ($column < 0) continue;
+
 
 			if (isset($matrix[$line][$column]) && $matrix[$line][$column] != Matrix::BOMB) {
 			
@@ -59,10 +60,10 @@ class Up
 				continue;
 			
 			}		
-
+			
 			break;
 		}
-
+		
 		return $matrix;
 	}
 }
