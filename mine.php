@@ -1,3 +1,22 @@
+<?php 
+/**
+ * ações do campo minado
+ */
+require 'vendor/autoload.php'; 
+
+use CampoMinado\Matrix;
+
+if (empty($_SESSION)) session_start();
+$clear = new CampoMinado\FieldSelect();
+
+if (empty($_SESSION['matrix'])) {
+
+	$matrix = new Matrix();
+	$_SESSION['matrix'] = $matrix->generate(10, 13);
+	
+}
+
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -45,99 +64,27 @@
 
 		<h1>Mine</h1>
 
-		<br>
-
-		<p><a href="mine.php" class="button">New</a></p>
-
-		<br>
-
 		<table border='0'>
 
 			<tr>
 		
 				<?php				
 
-					session_start();
-
-					// valores iniciais
-					$linhas 		= 10;
-					$colunas 		= $linhas;
-					$bombas 		= 10;
-					$bomba 			= "@";
-
 					// valores url que vamos utilizar para manipular o programa através da URL
-					$acao 			= !empty($_REQUEST['acao']) ? $_REQUEST['acao'] : null;
-					$clickLinha 	= !empty($_REQUEST['linha']) ? $_REQUEST['linha'] : null;
-					$clickColuna 	= !empty($_REQUEST['coluna']) ? $_REQUEST['coluna'] : null;
-					$cell 			= !empty($_REQUEST['celula']) ? $_REQUEST['celula'] : null;
+					$acao 	= !empty($_REQUEST['acao']) ? $_REQUEST['acao'] : null;
+					$linha 	= isset($_REQUEST['linha']) && is_numeric($_REQUEST['linha']) ? $_REQUEST['linha'] : null;
+					$column = isset($_REQUEST['coluna']) && is_numeric($_REQUEST['coluna']) ? $_REQUEST['coluna'] : null;					
 
-					// contador para total de células na matriz
-					$cellCount = 0;		
+	
+					if ($acao == 'click' ) {				
 
-					// array que vai abrir a máscara da matriz que vamos utilizar
-					$onPageMask = array();
-
-					// criamos a matriz com base nas variáveis linhas e colunas
-					for ($a = 1; $a <= $linhas; $a++) {
-						for($b = 1; $b <= $colunas; $b++) {
-							// criamos a matriz na variável $onPageMask
-							// utilizamos um contador para popular as células da matriz
-							$onPageMask[$a][$b] = $cellCount;
-							$cellCount++;
-						}
-					}			
-
-					// cópia da primeira matriz criada
-					$finalArray = $onPageMask;						
-
-					// criar o array que vai armezenar as bombas
-					$vetorBombas = array();
-
-					if ($acao != 'click' || $acao == '') {				
-
-						// criamos um vetor com a média de bombas
-						for ($a = 1; $a <= $cellCount; $a++) {
-							if ($a <= $bombas) {
-								$vetorBombas[$a] = $bomba;							
-							} else {
-								$vetorBombas[$a] = null;
-							}						
-						}
-						echo '<pre>';
-						var_dump($finalArray, $vetorBombas);
-						exit();
-						// randomizamos os valores do vetor
-						shuffle($vetorBombas);
-
-						// iniciado o contador para o for abaixo
-						$tot = 1;
-
-						// for para recriar matriz com as bombas
-						for($l = 1; $l <= $linhas; $l++) {
-							for($c = 1; $c <= $colunas; $c++) {
-								// definimos os valores de cada célula do array com base no vetor de bombas randomizado
-								$finalArray[$l][$c] = $vetorBombas[$tot];								
-								// utilizamos um contador para incluir os valores de mesmo indíce na matriz
-								$tot++;
-							}
-						}				
-
-						$count = 1;
-
-						for ($l = 1; $l <= $linhas; $l++) {
-							echo "<tr>";
-								foreach ($finalArray[$l] as $item) {
-									if ($item != '@') $item = 'x';
-									echo "<td onclick='javascript: windows.location=\"mine.php?acao=click&linha={$l}&coluna={$c}&celula={$count}\"' style='padding: 15px;'></td>";
-									$onPageMask[$l][$c] = $cellCount;
-									$count++;
-								}
-							echo "</tr>";
+						$success = $clear->try($_SESSION['matrix'], $linha, $column);
+						
+						if (!$success['success']) {
+							die('acertou uma bomba');
 						}
 
-						$_SESSION['finalArray'] = $finalArray;
-
-					} else {
+						$_SESSION['matrix'] = $success['matrix'];
 
 						// $finalArray = $_SESSION['finalArray'];
 
@@ -149,6 +96,9 @@
 
 						// unset($linha, $coluna, $celula);
 
+					} else {
+						$matrix = new Matrix();
+						$_SESSION['matrix'] = $matrix->generate(10, 13);
 					}
 
 					// unset($vetorBombas, $a, $b, $onPageMask);				
@@ -166,16 +116,22 @@
 
 			<?php
 								
-				for ($l = 1; $l <= $linhas; $l++) {
+				foreach ($_SESSION['matrix'] as $r => $row) {
+
 					echo "<tr>";
-						foreach ($finalArray[$l] as $item) {
-							if ($item != '@') $item = 'x';
-							echo "<td>
-									<a href='?acao=click&linha={$l}&coluna={$c}&celula={$count}'>{$item}</a>
-								  </td>";
-							$onPageMask[$a][$b] = $cellCount;
-							$count++;
+
+						foreach ($row as $c => $column) {	
+							
+							$item = '';
+							if (Matrix::CLEAR == $column) {
+								$item = 'clear';
+							}
+
+							echo "<td onclick='javascript: window.location=\"mine.php?acao=click&linha={$r}&coluna={$c}\";' style='padding: 15px;'>".$item."</td>";
+							
+							
 						}
+					
 					echo "</tr>";
 				}
 				
@@ -187,13 +143,5 @@
 
 	</div>
 
-
-	<?php	
-
-		echo "<pre>";
-		r($GLOBALS);
-
-	?>
-	
 </body>
 </html>

@@ -22,7 +22,7 @@ class ClearMatrix
 	{		
 		$dimensions = $this->calcule->getDimensions($matrix, $line, $column);
 		$matrix     = $this->search($matrix, ['row' => $line, 'column' => $column], $dimensions);
-		die(var_dump($matrix));
+		
 		return $matrix;
 	}
 
