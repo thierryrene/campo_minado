@@ -1,10 +1,10 @@
 <?php
 
-if ($_SERVER['SERVER_NAME'] == 'localhost') {
-    require_once '../composer/vendor/autoload.php';    
-}
+session_start();
 
-$linhas  = 8;
+require_once '../testando_composer/vendor/autoload.php';    
+
+$linhas  = 20;
 // colunas com o mesmo valor das linhas
 $colunas = $linhas;
 $bombas = 10;
@@ -41,7 +41,7 @@ if($acao != 'click') {
 		if ($a <= $bombas) {
 			$vetorBombas[$a] = $bomba;
 		} else {
-			$vetorBombas[$a] = null;
+			$vetorBombas[$a] = '';
 		}
 	}
 
@@ -64,40 +64,54 @@ if($acao != 'click') {
 
 	foreach($matrizComBombas as $l => $linha) {
 		foreach ($linha as $c => $coluna) {
-
+			
 			if ($coluna == '@') {
 				
-				// verificamos bloco acima
-				if (($l + 1) = $linhas) {
-					
+				if (($l + 1) <= $linhas ) {
+					if ($matrizComBombas[$l + 1][$c] != '@') {
+						if ($matrizComBombas[$l + 1][$c] != 1) {
+							$matrizComBombas[$l + 1][$c] = 1;
+						}
+					}
 				}
-
-				// verificamos bloco da frente
-				if (($c + 1) <= $colunas) {
-
+				
+				if (($c + 1) <= $colunas ) {
+					if ($matrizComBombas[$l][$c + 1] != '@') {
+						if ($matrizComBombas[$l][$c + 1] != 1) {
+							$matrizComBombas[$l][$c + 1] = 1;
+						}
+					}
 				}
-
-				// verificamos bloco de baixo
-				if (($l - 1) <= $linhas) {
-
-				} 
-
-				// verificamos bloco de trás
-				if (($c - 1) <= $colunas) {
-
+				
+				if (($l - 1) > 0 ) {
+					if ($matrizComBombas[$l - 1][$c] != '@') {
+						if ($matrizComBombas[$l - 1][$c] != 1) { 
+							$matrizComBombas[$l - 1][$c] = 1;
+						}
+					}
 				}
-
+				
+				if (($c - 1) > 0 ) {
+					if ($matrizComBombas[$l][$c - 1] != '@') {
+						if ($matrizComBombas[$l][$c - 1] != 1) { 
+							$matrizComBombas[$l][$c - 1] = 1;
+						} 
+					}
+				}
+				
 			}
-
+			
 		}
 	}
+	
+	r($matrizComBombas);
 
 	$_SESSION['matrizComBombas'] = $matrizComBombas;
 
 } else {
 
 	$matrizComBombas = $_SESSION['matrizComBombas'];
-
+	
 }
 
 ?>
@@ -106,15 +120,16 @@ if($acao != 'click') {
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>Mine!</title>
+	<title>Mines!</title>
 
 	<style type="text/css">		
 		* {
-			font-family: tahoma;
+			font-family: arial;
 		}
 
 		td {
 			padding: 20px;
+			background-color: gold;
 
 		}
 	</style>
@@ -126,19 +141,31 @@ if($acao != 'click') {
 		<hr>
 	</div>
 
-	<div>
-		
-		<table style="margin: auto;" border="1">
+	<div style="margin:auto;">
+		<a href="mine_rebuild.php">NEW GAME</a>
+		<table style="margin: auto;">
 			
 			<?php
 
 				foreach ($matrizComBombas as $l => $linha) {
 					echo "<tr>";
 						foreach($linha as $c => $coluna) {
-							echo "<td>{$coluna}</td>";
+							if ($coluna == '') {
+								echo "<td style='background-color:grey;' onclick='javascript: window.location=\"mine_rebuild.php?acao=click&linha={$l}&coluna={$c}\"'></td>";
+							} elseif ($coluna == '@') {
+								echo "<td style='background-color:crimson;' onclick='javascript: window.location=\"mine_rebuild.php?acao=click&linha={$l}&coluna={$c}\"'>{$coluna}</td>";
+							} else {
+								echo "<td onclick='javascript: window.location=\"mine_rebuild.php?acao=click&linha={$l}&coluna={$c}\"'>{$coluna}</td>";
+							}
 						}
 					echo "</tr>";
 				}
+				
+				if (!empty($matrizComBombas) && $acao == 'click') {
+					echo "<span style='color:snow; padding: 5px 8px; background-color: grey;'>você clicou na linha {$_REQUEST['linha']}, coluna {$_REQUEST['coluna']}</span>";
+				}
+				
+				
 
 			?>
 
@@ -153,7 +180,7 @@ if($acao != 'click') {
 
 <?php
 
-r($GLOBALS);
+r($matrizComBombas);
 
 
 // for ($linha = 1; $linha <= $linhas; $linha++) {
