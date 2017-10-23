@@ -7,7 +7,7 @@ require_once '../composer/vendor/autoload.php';
 $linhas  = 10;
 // colunas com o mesmo valor das linhas
 $colunas = $linhas;
-$bombas = rand(1, 10);
+$bombas = 10;
 $bomba = '@';
 $totalCelulas = $linhas * $colunas;
 
@@ -16,6 +16,7 @@ $acao 			= !empty($_REQUEST['acao']) 	? $_REQUEST['acao'] 	: null;
 $clickLinha 	= !empty($_REQUEST['linha']) 	? $_REQUEST['linha'] 	: null;
 $clickColuna 	= !empty($_REQUEST['coluna']) 	? $_REQUEST['coluna'] 	: null;
 $cell 			= !empty($_REQUEST['celula'])	? $_REQUEST['celula'] 	: null;
+$emptyBlock		= !empty($_REQUEST['bloco'])	? $_REQUEST['bloco'] 	: null;
 
 $contadorCelulas = 1;
 
@@ -65,110 +66,232 @@ if($acao != 'click') {
 	$bombaContador = 1;
 
 	foreach($matrizComBombas as $l => $linha) {
+
 		foreach ($linha as $c => $coluna) {
-			
-			if ($coluna == '@') {
-				
-				// bloco de cima
-				if (($l + 1) <= $linhas ) {
-					if ($matrizComBombas[$l + 1][$c] != $bomba) {
-						if ($matrizComBombas[$l + 1][$c] != 1) {
-							$matrizComBombas[$l + 1][$c] = 1;
-						}
-					} else {
-						$bombaContador++;
-					}
-				}			
-					
-				// bloco da frente
-				if (($c + 1) <= $colunas ) {
-					if ($matrizComBombas[$l][$c + 1] != $bomba) {
-						if ($matrizComBombas[$l][$c + 1] != 1) {
-							$matrizComBombas[$l][$c + 1] = 1;
-						} 
-					} else {
-						$bombaContador++;
-					}
-				}				
+
+			if ($coluna == '') {
 				
 				// bloco de baixo
+				if (($l + 1) <= $linhas ) {
+					if ($matrizComBombas[$l + 1][$c] == $bomba) {
+						$bombaContador++;
+						$matrizComBombas[$l][$c] = $bombaContador;
+						// $matrizComBombas[$l + 1][$c] = $bombaContador;
+						$bombaContador = null;
+					} 
+				}	
+
+				// bloco de cima
 				if (($l - 1) > 0) {
-					if ($matrizComBombas[$l - 1][$c] != $bomba) {
-						if ($matrizComBombas[$l - 1][$c] != 1) { 
-							$matrizComBombas[$l - 1][$c] = 1;
-						} 
-					} else {
+					if ($matrizComBombas[$l - 1][$c] == $bomba) {
 						$bombaContador++;
+						$matrizComBombas[$l - 1][$c] = 1;
+						$bombaContador = null;
 					}
-				}
+				}		
+					
+				// // bloco da frente
+				// if (($c + 1) <= $colunas ) {
+				// 	if ($matrizComBombas[$l][$c + 1] != $bomba) {
+				// 		if ($matrizComBombas[$l][$c + 1] != 1) {
+				// 			$matrizComBombas[$l][$c + 1] = 1;
+				// 		} 
+				// 	} else {
+				// 		$bombaContador++;
+				// 	}
+				// }				
 				
-				// bloco de trás
-				if (($c - 1) > 0 ) {
-					if ($matrizComBombas[$l][$c - 1] != $bomba) {
-						if ($matrizComBombas[$l][$c - 1] != 1) { 
-							$matrizComBombas[$l][$c - 1] = 1;
-						}
-					} else {
-						$bombaContador++;
-					}
-				}
+				// // bloco de baixo
+				// if (($l - 1) > 0) {
+				// 	if ($matrizComBombas[$l - 1][$c] != $bomba) {
+				// 		if ($matrizComBombas[$l - 1][$c] != 1) { 
+				// 			$matrizComBombas[$l - 1][$c] = 1;
+				// 		} 
+				// 	} else {
+				// 		$bombaContador++;
+				// 	}
+				// }
+				
+				// // bloco de trás
+				// if (($c - 1) > 0 ) {
+				// 	if ($matrizComBombas[$l][$c - 1] != $bomba) {
+				// 		if ($matrizComBombas[$l][$c - 1] != 1) { 
+				// 			$matrizComBombas[$l][$c - 1] = 1;
+				// 		}
+				// 	} else {
+				// 		$bombaContador++;
+				// 	}
+				// }
 
-				// diagonal inferior direita
-				if (($l + 1) <= $linhas && ($c + 1) <= $colunas) {
-					if ($matrizComBombas[$l + 1][$c + 1] != $bomba) {
-						if ($matrizComBombas[$l + 1][$c + 1] != 1) {
-							$matrizComBombas[$l + 1][$c + 1] = 1;
-						}
-					} else {
-						$bombaContador++;
-					}
-				}
+				// // diagonal inferior direita
+				// if (($l + 1) <= $linhas && ($c + 1) <= $colunas) {
+				// 	if ($matrizComBombas[$l + 1][$c + 1] != $bomba) {
+				// 		if ($matrizComBombas[$l + 1][$c + 1] != 1) {
+				// 			$matrizComBombas[$l + 1][$c + 1] = 1;
+				// 		}
+				// 	} else {
+				// 		$bombaContador++;
+				// 	}
+				// }
 
-				// diagonal superior direita
-				if (($c + 1) <= $colunas && ($l - 1) > 0) {
-					if ($matrizComBombas[$l - 1][$c + 1] != $bomba) {
-						if ($matrizComBombas[$l - 1][$c + 1] != 1) {
-							$matrizComBombas[$l - 1][$c + 1] = 1;
-						}
-					} else {
-						$bombaContador++;
-					}
-				}
+				// // diagonal superior direita
+				// if (($c + 1) <= $colunas && ($l - 1) > 0) {
+				// 	if ($matrizComBombas[$l - 1][$c + 1] != $bomba) {
+				// 		if ($matrizComBombas[$l - 1][$c + 1] != 1) {
+				// 			$matrizComBombas[$l - 1][$c + 1] = 1;
+				// 		}
+				// 	} else {
+				// 		$bombaContador++;
+				// 	}
+				// }
 
-				// diagonal superior esquerda
-				if (($c - 1) > 0 && ($l - 1) > 0) {
-					if ($matrizComBombas[$l - 1][$c - 1] != $bomba) {
-						if ($matrizComBombas[$l - 1][$c - 1] != 1) {
-							$matrizComBombas[$l - 1][$c - 1] = 1;
-						}
-					} else {
-						$bombaContador++;
-					}
-				}
+				// // diagonal superior esquerda
+				// if (($c - 1) > 0 && ($l - 1) > 0) {
+				// 	if ($matrizComBombas[$l - 1][$c - 1] != $bomba) {
+				// 		if ($matrizComBombas[$l - 1][$c - 1] != 1) {
+				// 			$matrizComBombas[$l - 1][$c - 1] = 1;
+				// 		}
+				// 	} else {
+				// 		$bombaContador++;
+				// 	}
+				// }
 
-				// diagonal inferior esquerda
-				if (($l + 1) <= $linhas && ($c - 1) > 0 ) {
-					if ($matrizComBombas[$l + 1][$c - 1] != $bomba) {
-						if ($matrizComBombas[$l + 1][$c - 1] != 1) {
-							$matrizComBombas[$l + 1][$c - 1] = 1;
-						}
-					} else {
-						$bombaContador++;
-					}
-				}
+				// // diagonal inferior esquerda
+				// if (($l + 1) <= $linhas && ($c - 1) > 0 ) {
+				// 	if ($matrizComBombas[$l + 1][$c - 1] != $bomba) {
+				// 		if ($matrizComBombas[$l + 1][$c - 1] != 1) {
+				// 			$matrizComBombas[$l + 1][$c - 1] = 1;
+				// 		}
+				// 	} else {
+				// 		$bombaContador++;
+				// 	}
+				// }
 				
 			}
 			
+			// if ($coluna == '@') {
+				
+			// 	// bloco de cima
+			// 	if (($l + 1) <= $linhas ) {
+			// 		if ($matrizComBombas[$l + 1][$c] != $bomba) {
+			// 			if ($matrizComBombas[$l + 1][$c] != 1) {
+			// 				$matrizComBombas[$l + 1][$c] = 1;
+			// 			}
+			// 		} else {
+			// 			$bombaContador++;
+			// 			$matrizComBombas[$l + 1][$c] = $bombaContador;
+			// 			$bombaContador = null;
+			// 		}
+			// 	}			
+					
+			// 	// bloco da frente
+			// 	if (($c + 1) <= $colunas ) {
+			// 		if ($matrizComBombas[$l][$c + 1] != $bomba) {
+			// 			if ($matrizComBombas[$l][$c + 1] != 1) {
+			// 				$matrizComBombas[$l][$c + 1] = 1;
+			// 			} 
+			// 		} else {
+			// 			$bombaContador++;
+			// 		}
+			// 	}				
+				
+			// 	// bloco de baixo
+			// 	if (($l - 1) > 0) {
+			// 		if ($matrizComBombas[$l - 1][$c] != $bomba) {
+			// 			if ($matrizComBombas[$l - 1][$c] != 1) { 
+			// 				$matrizComBombas[$l - 1][$c] = 1;
+			// 			} 
+			// 		} else {
+			// 			$bombaContador++;
+			// 		}
+			// 	}
+				
+			// 	// bloco de trás
+			// 	if (($c - 1) > 0 ) {
+			// 		if ($matrizComBombas[$l][$c - 1] != $bomba) {
+			// 			if ($matrizComBombas[$l][$c - 1] != 1) { 
+			// 				$matrizComBombas[$l][$c - 1] = 1;
+			// 			}
+			// 		} else {
+			// 			$bombaContador++;
+			// 		}
+			// 	}
+
+			// 	// diagonal inferior direita
+			// 	if (($l + 1) <= $linhas && ($c + 1) <= $colunas) {
+			// 		if ($matrizComBombas[$l + 1][$c + 1] != $bomba) {
+			// 			if ($matrizComBombas[$l + 1][$c + 1] != 1) {
+			// 				$matrizComBombas[$l + 1][$c + 1] = 1;
+			// 			}
+			// 		} else {
+			// 			$bombaContador++;
+			// 		}
+			// 	}
+
+			// 	// diagonal superior direita
+			// 	if (($c + 1) <= $colunas && ($l - 1) > 0) {
+			// 		if ($matrizComBombas[$l - 1][$c + 1] != $bomba) {
+			// 			if ($matrizComBombas[$l - 1][$c + 1] != 1) {
+			// 				$matrizComBombas[$l - 1][$c + 1] = 1;
+			// 			}
+			// 		} else {
+			// 			$bombaContador++;
+			// 		}
+			// 	}
+
+			// 	// diagonal superior esquerda
+			// 	if (($c - 1) > 0 && ($l - 1) > 0) {
+			// 		if ($matrizComBombas[$l - 1][$c - 1] != $bomba) {
+			// 			if ($matrizComBombas[$l - 1][$c - 1] != 1) {
+			// 				$matrizComBombas[$l - 1][$c - 1] = 1;
+			// 			}
+			// 		} else {
+			// 			$bombaContador++;
+			// 		}
+			// 	}
+
+			// 	// diagonal inferior esquerda
+			// 	if (($l + 1) <= $linhas && ($c - 1) > 0 ) {
+			// 		if ($matrizComBombas[$l + 1][$c - 1] != $bomba) {
+			// 			if ($matrizComBombas[$l + 1][$c - 1] != 1) {
+			// 				$matrizComBombas[$l + 1][$c - 1] = 1;
+			// 			}
+			// 		} else {
+			// 			$bombaContador++;
+			// 		}
+			// 	}
+				
+			// }
+			
 		}
 	}
-	
-	r($matrizComBombas);
+
+	echo $bombaContador;	
 
 	$_SESSION['matrizComBombas'] = $matrizComBombas;
 
 } else {
 
 	$matrizComBombas = $_SESSION['matrizComBombas'];
+
+	$clickMouse = $matrizComBombas[$clickLinha][$clickColuna];
+
+	if ($emptyBlock != '' && $acao != '') {
+		echo "<script>console.log('condição para apagar blocos OK');</script>";
+		// foreach ($matrizComBombas as $l => $linha) {
+		// 	foreach ($linha as $c => $coluna) {
+
+		// 	}
+		// }
+	}
+
+	r($clickMouse);
+
+	if ($clickMouse == $bomba) {
+		echo "<p>Você clicou em uma bomba. Jogo encerrado. :(</p>";
+		echo "<a href='mine_rebuild.php'>NEW GAME</a>";
+		die;
+	}
 	
 }
 
@@ -211,11 +334,9 @@ if($acao != 'click') {
 
 						foreach($linha as $c => $coluna) {
 
-							// echo "<td style='background-color:grey;' onclick='javascript: window.location=\"mine_rebuild.php?acao=click&linha={$l}&coluna={$c}\"'>{$coluna}</td>";
-
 							if ($coluna == '') {
-								echo "<td style='background-color:grey;' onclick='javascript: window.location=\"mine_rebuild.php?acao=click&linha={$l}&coluna={$c}\"'></td>";
-							} elseif ($coluna == '@') {
+								echo "<td style='background-color:grey;' onclick='javascript: window.location=\"mine_rebuild.php?acao=click&linha={$l}&coluna={$c}&bloco=empty\"'>{$coluna}</td>";
+							} elseif ($coluna == $bomba) {
 								echo "<td style='background-color:crimson;' onclick='javascript: window.location=\"mine_rebuild.php?acao=click&linha={$l}&coluna={$c}\"'>{$coluna}</td>";
 							} else {
 								echo "<td onclick='javascript: window.location=\"mine_rebuild.php?acao=click&linha={$l}&coluna={$c}\"'>{$coluna}</td>";
@@ -229,7 +350,7 @@ if($acao != 'click') {
 				
 				if (!empty($matrizComBombas) && $acao == 'click') {
 					echo "<span style='color:snow; padding: 5px 8px; background-color: grey;'>você clicou na linha {$_REQUEST['linha']}, coluna {$_REQUEST['coluna']}</span>";
-					echo $bombaContador;
+					
 				}			
 
 			?>
