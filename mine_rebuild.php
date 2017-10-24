@@ -7,7 +7,7 @@ require_once '../composer/vendor/autoload.php';
 $linhas  = 10;
 // colunas com o mesmo valor das linhas
 $colunas = $linhas;
-$bombas = 5;
+$bombas = 10;
 $bomba = '@';
 $totalCelulas = $linhas * $colunas;
 
@@ -52,7 +52,7 @@ if($acao != 'click') {
 	// criamos uma cópia da matriz inicial, para facilitar a leitura do código
 	$matrizComBombas = $matrizInicial;
 
-	// utilizamos um contador das bombas para determinar o indícel que deve ser inserido na matriz com bombas
+	// utilizamos um contador das bombas para determinar o indice que deve ser inserido na matriz com bombas
 	$contadorBombas = 1;
 
 	// distribuimos os valores do vetor na matriz
@@ -63,103 +63,84 @@ if($acao != 'click') {
 		}
 	}
 
-	$bombaContador = 1;
+	// contador de bombas em volta dos blocos
+	$bombaContador = 0;
 
 	foreach($matrizComBombas as $l => $linha) {
 
 		foreach ($linha as $c => $coluna) {
 
-
 			// verificamos em volta dos blocos vazios
-			if ($coluna == '') {
-				
-				// bloco de baixo
-				if (($l + 1) <= $linhas ) {
-					if ($matrizComBombas[$l + 1][$c] == $bomba) {
-						if ($matrizComBombas[$l + 1][$c] != 1) {
-							$bombaContador++;
-							$matrizComBombas[$l][$c] = $bombaContador;
-							$bombaContador = null;
-						}						
-					} 
-				}	
+			if ($coluna == '') {	
 
 				// bloco de cima
-				if (($l - 1) > 0) {
-					if ($matrizComBombas[$l - 1][$c] == $bomba) {
-						if ($matrizComBombas[$l + 1][$c] != 1) {
-							$bombaContador++;
-							$matrizComBombas[$l][$c] = $bombaContador;
-							$debug = $matrizComBombas[$l][$c];
-							$bombaContador = null;
-						}
+				if (isset($matrizComBombas[$l + 1][$c])) {
+					if ($matrizComBombas[$l + 1][$c] == $bomba) {
+						$bombaContador++;							
+					}
+				}
+
+				// bloco diagonal superior direita
+				if (isset($matrizComBombas[$l - 1][$c + 1])) {
+					if ($matrizComBombas[$l - 1][$c + 1] == $bomba) {
+						$bombaContador++;
 					}
 				}
 
 				// bloco da frente
-				if (($c + 1) <= $colunas) {
+				if (isset($matrizComBombas[$l][$c + 1])) {
 					if ($matrizComBombas[$l][$c + 1] == $bomba) {
-						if ($matrizComBombas[$l + 1][$c] != 1) {
-							$bombaContador++;
-							$matrizComBombas[$l][$c] = $bombaContador;
-							$bombaContador = null;
-						}
+						$bombaContador++;						
 					}
-				}	
+				}
+
+				// bloco diagonal inferior direito
+				if (isset($matrizComBombas[$l + 1][$c + 1])) {
+					if ($matrizComBombas[$l + 1][$c + 1] == $bomba) {
+						$bombaContador++;
+					}
+				}
+
+				// bloco de baixo
+				if (isset($matrizComBombas[$l - 1][$c])) {
+					if ($matrizComBombas[$l - 1][$c] == $bomba) {
+						$bombaContador++;
+					}
+				}
+
+				// bloco diagonal inferior esquerdo
+				if (isset($matrizComBombas[$l + 1][$c - 1])) {
+					if ($matrizComBombas[$l + 1][$c - 1] == $bomba) {
+						$bombaContador++;
+					}
+				}		
 
 				// bloco de trás
-				if (($c - 1) > 0) {
+				if (isset($matrizComBombas[$l][$c - 1])) {
 					if ($matrizComBombas[$l][$c - 1] == $bomba) {
-						if ($matrizComBombas[$l + 1][$c] != 1) {
-							$bombaContador++;
-							$matrizComBombas[$l][$c] = $bombaContador;
-							$bombaContador = null;
-						}
+						$bombaContador++;
 					}
-				}	
+				}		
 
-				// ##################################################### //				
-
-				// if (($l + 1) <= $colunas && ($c + 1) <= $linhas) {
-				// 	if ($matrizComBombas[$l + 1][$c + 1] == $bomba) {
-				// 		$bombaContador++;
-				// 		$matrizComBombas[$l][$c] == $bombaContador;
-				// 		$bombaContador = null;
-				// 	}
-				// }
-
-				// if (($l - 1) > 0 && ($c - 1) > 0) {
-				// 	if ($matrizComBombas[$l - 1][$c - 1] == $bomba) {
-				// 		$bombaContador++;
-				// 		$matrizComBombas[$l][$c] == $bombaContador;
-				// 		$bombaContador = null;
-				// 	}
-				// }
-
-				// if (($l - 1) > 0 && ($c + 1) >= $colunas ) {
-				// 	if ($matrizComBombas[$l - 1][$c + 1] == $bomba) {
-				// 		$bombaContador++;
-				// 		$matrizComBombas[$l][$c] == $bombaContador;
-				// 		$bombaContador = null;
-				// 	}
-				// }
-
-				// if (($l + 1) <= $linhas && ($c - 1) > 0) {
-				// 	if ($matrizComBombas[$l + 1][$c - 1] == $bomba) {
-				// 		$bombaContador++;
-				// 		$matrizComBombas[$l][$c] == $bombaContador;
-				// 		$bombaContador = null;
-				// 	}
-				// }				
+				// bloco diagonal superior esquerdo 
+				if (isset($matrizComBombas[$l - 1][$c - 1])) {
+					if ($matrizComBombas[$l - 1][$c - 1] == $bomba) {
+						$bombaContador++;
+					}
+				}
 				
+				$matrizComBombas[$l][$c] = $bombaContador;	
+
+				$bombaContador = 0;									
+				
+				if ($matrizComBombas[$l][$c] == 0) {
+					$matrizComBombas[$l][$c] = null;
+				}
+
 			}		
 			
 		}
 	}
-
-	r($debug);
-
-	echo $bombaContador;	
 
 	$_SESSION['matrizComBombas'] = $matrizComBombas;
 
@@ -169,18 +150,13 @@ if($acao != 'click') {
 
 	$clickMouse = $matrizComBombas[$clickLinha][$clickColuna];
 
+	// condição para apagar blocos
 	if ($emptyBlock != '' && $acao != '') {
 		echo "<script>console.log('condição para apagar blocos OK');</script>";
-		// foreach ($matrizComBombas as $l => $linha) {
-		// 	foreach ($linha as $c => $coluna) {
-
-		// 	}
-		// }
 	}
 
-	r($clickMouse);
-
 	if ($clickMouse == $bomba) {
+		echo $bomba;
 		echo "<p>Você clicou em uma bomba. Jogo encerrado. :(</p>";
 		echo "<a href='mine_rebuild.php'>NEW GAME</a>";
 		die;
@@ -227,8 +203,8 @@ if($acao != 'click') {
 
 						foreach($linha as $c => $coluna) {
 
-							if ($coluna == '') {
-								echo "<td style='background-color:grey;' onclick='javascript: window.location=\"mine_rebuild.php?acao=click&linha={$l}&coluna={$c}&bloco=empty\"'>{$coluna}</td>";
+							if ($coluna == null) {
+								echo "<td style='background-color:grey;' onclick='javascript: window.location=\"mine_rebuild.php?acao=click&linha={$l}&coluna={$c}&bloco=empty\"'></td>";
 							} elseif ($coluna == $bomba) {
 								echo "<td style='background-color:crimson;' onclick='javascript: window.location=\"mine_rebuild.php?acao=click&linha={$l}&coluna={$c}\"'>{$coluna}</td>";
 							} else {
@@ -256,17 +232,8 @@ if($acao != 'click') {
 </body>
 </html>
 
-
 <?php
 
 r($matrizComBombas);
-
-// for ($linha = 1; $linha <= $linhas; $linha++) {
-// 	echo "<tr>";
-// 		for ($coluna = 1; $coluna <= $colunas; $coluna++) {
-// 			echo "<td style='background-color: gray;' onclick='javascript: window.location=\"mine_rebuild.php?acao=click&linha={$linha}&coluna={$coluna}\"'></td>";
-// 		}
-// 	echo "</tr>";
-// }
 
 ?>
