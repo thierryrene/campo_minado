@@ -7,7 +7,7 @@ require_once '../composer/vendor/autoload.php';
 $linhas  = 10;
 // colunas com o mesmo valor das linhas
 $colunas = $linhas;
-$bombas = 10;
+$bombas = 5;
 $bomba = '@';
 $totalCelulas = $linhas * $colunas;
 
@@ -69,202 +69,95 @@ if($acao != 'click') {
 
 		foreach ($linha as $c => $coluna) {
 
+
+			// verificamos em volta dos blocos vazios
 			if ($coluna == '') {
 				
 				// bloco de baixo
 				if (($l + 1) <= $linhas ) {
 					if ($matrizComBombas[$l + 1][$c] == $bomba) {
-						$bombaContador++;
-						$matrizComBombas[$l][$c] = $bombaContador;
-						// $matrizComBombas[$l + 1][$c] = $bombaContador;
-						$bombaContador = null;
+						if ($matrizComBombas[$l + 1][$c] != 1) {
+							$bombaContador++;
+							$matrizComBombas[$l][$c] = $bombaContador;
+							$bombaContador = null;
+						}						
 					} 
 				}	
 
 				// bloco de cima
 				if (($l - 1) > 0) {
 					if ($matrizComBombas[$l - 1][$c] == $bomba) {
-						$bombaContador++;
-						$matrizComBombas[$l - 1][$c] = 1;
-						$bombaContador = null;
+						if ($matrizComBombas[$l + 1][$c] != 1) {
+							$bombaContador++;
+							$matrizComBombas[$l][$c] = $bombaContador;
+							$debug = $matrizComBombas[$l][$c];
+							$bombaContador = null;
+						}
 					}
-				}		
-					
-				// // bloco da frente
-				// if (($c + 1) <= $colunas ) {
-				// 	if ($matrizComBombas[$l][$c + 1] != $bomba) {
-				// 		if ($matrizComBombas[$l][$c + 1] != 1) {
-				// 			$matrizComBombas[$l][$c + 1] = 1;
-				// 		} 
-				// 	} else {
+				}
+
+				// bloco da frente
+				if (($c + 1) <= $colunas) {
+					if ($matrizComBombas[$l][$c + 1] == $bomba) {
+						if ($matrizComBombas[$l + 1][$c] != 1) {
+							$bombaContador++;
+							$matrizComBombas[$l][$c] = $bombaContador;
+							$bombaContador = null;
+						}
+					}
+				}	
+
+				// bloco de trás
+				if (($c - 1) > 0) {
+					if ($matrizComBombas[$l][$c - 1] == $bomba) {
+						if ($matrizComBombas[$l + 1][$c] != 1) {
+							$bombaContador++;
+							$matrizComBombas[$l][$c] = $bombaContador;
+							$bombaContador = null;
+						}
+					}
+				}	
+
+				// ##################################################### //				
+
+				// if (($l + 1) <= $colunas && ($c + 1) <= $linhas) {
+				// 	if ($matrizComBombas[$l + 1][$c + 1] == $bomba) {
 				// 		$bombaContador++;
+				// 		$matrizComBombas[$l][$c] == $bombaContador;
+				// 		$bombaContador = null;
+				// 	}
+				// }
+
+				// if (($l - 1) > 0 && ($c - 1) > 0) {
+				// 	if ($matrizComBombas[$l - 1][$c - 1] == $bomba) {
+				// 		$bombaContador++;
+				// 		$matrizComBombas[$l][$c] == $bombaContador;
+				// 		$bombaContador = null;
+				// 	}
+				// }
+
+				// if (($l - 1) > 0 && ($c + 1) >= $colunas ) {
+				// 	if ($matrizComBombas[$l - 1][$c + 1] == $bomba) {
+				// 		$bombaContador++;
+				// 		$matrizComBombas[$l][$c] == $bombaContador;
+				// 		$bombaContador = null;
+				// 	}
+				// }
+
+				// if (($l + 1) <= $linhas && ($c - 1) > 0) {
+				// 	if ($matrizComBombas[$l + 1][$c - 1] == $bomba) {
+				// 		$bombaContador++;
+				// 		$matrizComBombas[$l][$c] == $bombaContador;
+				// 		$bombaContador = null;
 				// 	}
 				// }				
 				
-				// // bloco de baixo
-				// if (($l - 1) > 0) {
-				// 	if ($matrizComBombas[$l - 1][$c] != $bomba) {
-				// 		if ($matrizComBombas[$l - 1][$c] != 1) { 
-				// 			$matrizComBombas[$l - 1][$c] = 1;
-				// 		} 
-				// 	} else {
-				// 		$bombaContador++;
-				// 	}
-				// }
-				
-				// // bloco de trás
-				// if (($c - 1) > 0 ) {
-				// 	if ($matrizComBombas[$l][$c - 1] != $bomba) {
-				// 		if ($matrizComBombas[$l][$c - 1] != 1) { 
-				// 			$matrizComBombas[$l][$c - 1] = 1;
-				// 		}
-				// 	} else {
-				// 		$bombaContador++;
-				// 	}
-				// }
-
-				// // diagonal inferior direita
-				// if (($l + 1) <= $linhas && ($c + 1) <= $colunas) {
-				// 	if ($matrizComBombas[$l + 1][$c + 1] != $bomba) {
-				// 		if ($matrizComBombas[$l + 1][$c + 1] != 1) {
-				// 			$matrizComBombas[$l + 1][$c + 1] = 1;
-				// 		}
-				// 	} else {
-				// 		$bombaContador++;
-				// 	}
-				// }
-
-				// // diagonal superior direita
-				// if (($c + 1) <= $colunas && ($l - 1) > 0) {
-				// 	if ($matrizComBombas[$l - 1][$c + 1] != $bomba) {
-				// 		if ($matrizComBombas[$l - 1][$c + 1] != 1) {
-				// 			$matrizComBombas[$l - 1][$c + 1] = 1;
-				// 		}
-				// 	} else {
-				// 		$bombaContador++;
-				// 	}
-				// }
-
-				// // diagonal superior esquerda
-				// if (($c - 1) > 0 && ($l - 1) > 0) {
-				// 	if ($matrizComBombas[$l - 1][$c - 1] != $bomba) {
-				// 		if ($matrizComBombas[$l - 1][$c - 1] != 1) {
-				// 			$matrizComBombas[$l - 1][$c - 1] = 1;
-				// 		}
-				// 	} else {
-				// 		$bombaContador++;
-				// 	}
-				// }
-
-				// // diagonal inferior esquerda
-				// if (($l + 1) <= $linhas && ($c - 1) > 0 ) {
-				// 	if ($matrizComBombas[$l + 1][$c - 1] != $bomba) {
-				// 		if ($matrizComBombas[$l + 1][$c - 1] != 1) {
-				// 			$matrizComBombas[$l + 1][$c - 1] = 1;
-				// 		}
-				// 	} else {
-				// 		$bombaContador++;
-				// 	}
-				// }
-				
-			}
-			
-			// if ($coluna == '@') {
-				
-			// 	// bloco de cima
-			// 	if (($l + 1) <= $linhas ) {
-			// 		if ($matrizComBombas[$l + 1][$c] != $bomba) {
-			// 			if ($matrizComBombas[$l + 1][$c] != 1) {
-			// 				$matrizComBombas[$l + 1][$c] = 1;
-			// 			}
-			// 		} else {
-			// 			$bombaContador++;
-			// 			$matrizComBombas[$l + 1][$c] = $bombaContador;
-			// 			$bombaContador = null;
-			// 		}
-			// 	}			
-					
-			// 	// bloco da frente
-			// 	if (($c + 1) <= $colunas ) {
-			// 		if ($matrizComBombas[$l][$c + 1] != $bomba) {
-			// 			if ($matrizComBombas[$l][$c + 1] != 1) {
-			// 				$matrizComBombas[$l][$c + 1] = 1;
-			// 			} 
-			// 		} else {
-			// 			$bombaContador++;
-			// 		}
-			// 	}				
-				
-			// 	// bloco de baixo
-			// 	if (($l - 1) > 0) {
-			// 		if ($matrizComBombas[$l - 1][$c] != $bomba) {
-			// 			if ($matrizComBombas[$l - 1][$c] != 1) { 
-			// 				$matrizComBombas[$l - 1][$c] = 1;
-			// 			} 
-			// 		} else {
-			// 			$bombaContador++;
-			// 		}
-			// 	}
-				
-			// 	// bloco de trás
-			// 	if (($c - 1) > 0 ) {
-			// 		if ($matrizComBombas[$l][$c - 1] != $bomba) {
-			// 			if ($matrizComBombas[$l][$c - 1] != 1) { 
-			// 				$matrizComBombas[$l][$c - 1] = 1;
-			// 			}
-			// 		} else {
-			// 			$bombaContador++;
-			// 		}
-			// 	}
-
-			// 	// diagonal inferior direita
-			// 	if (($l + 1) <= $linhas && ($c + 1) <= $colunas) {
-			// 		if ($matrizComBombas[$l + 1][$c + 1] != $bomba) {
-			// 			if ($matrizComBombas[$l + 1][$c + 1] != 1) {
-			// 				$matrizComBombas[$l + 1][$c + 1] = 1;
-			// 			}
-			// 		} else {
-			// 			$bombaContador++;
-			// 		}
-			// 	}
-
-			// 	// diagonal superior direita
-			// 	if (($c + 1) <= $colunas && ($l - 1) > 0) {
-			// 		if ($matrizComBombas[$l - 1][$c + 1] != $bomba) {
-			// 			if ($matrizComBombas[$l - 1][$c + 1] != 1) {
-			// 				$matrizComBombas[$l - 1][$c + 1] = 1;
-			// 			}
-			// 		} else {
-			// 			$bombaContador++;
-			// 		}
-			// 	}
-
-			// 	// diagonal superior esquerda
-			// 	if (($c - 1) > 0 && ($l - 1) > 0) {
-			// 		if ($matrizComBombas[$l - 1][$c - 1] != $bomba) {
-			// 			if ($matrizComBombas[$l - 1][$c - 1] != 1) {
-			// 				$matrizComBombas[$l - 1][$c - 1] = 1;
-			// 			}
-			// 		} else {
-			// 			$bombaContador++;
-			// 		}
-			// 	}
-
-			// 	// diagonal inferior esquerda
-			// 	if (($l + 1) <= $linhas && ($c - 1) > 0 ) {
-			// 		if ($matrizComBombas[$l + 1][$c - 1] != $bomba) {
-			// 			if ($matrizComBombas[$l + 1][$c - 1] != 1) {
-			// 				$matrizComBombas[$l + 1][$c - 1] = 1;
-			// 			}
-			// 		} else {
-			// 			$bombaContador++;
-			// 		}
-			// 	}
-				
-			// }
+			}		
 			
 		}
 	}
+
+	r($debug);
 
 	echo $bombaContador;	
 
