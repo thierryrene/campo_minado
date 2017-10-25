@@ -7,7 +7,7 @@ require_once '../composer/vendor/autoload.php';
 $linhas  = 10;
 // colunas com o mesmo valor das linhas
 $colunas = $linhas;
-$bombas = 10;
+$bombas = 2;
 $bomba = '@';
 $totalCelulas = $linhas * $colunas;
 
@@ -16,71 +16,9 @@ $acao 			= !empty($_REQUEST['acao']) 	? $_REQUEST['acao'] 	: null;
 $clickLinha 	= !empty($_REQUEST['linha']) 	? $_REQUEST['linha'] 	: null;
 $clickColuna 	= !empty($_REQUEST['coluna']) 	? $_REQUEST['coluna'] 	: null;
 $cell 			= !empty($_REQUEST['celula'])	? $_REQUEST['celula'] 	: null;
-$emptyBlock		= !empty($_REQUEST['bloco'])	? $_REQUEST['bloco'] 	: null;
+$emptyBlock		= !empty($_REQUEST['empty'])	? $_REQUEST['empty']	: null;
 
 $contadorCelulas = 1;
-
-// function verificarBlocosEmVolta($linha, $coluna) {
-
-// 	// bloco de cima
-// 	if (isset($matrizComBombas[$l + 1][$c])) {
-// 		if ($matrizComBombas[$l + 1][$c] == $bomba) {
-// 			$bombaContador++;							
-// 		}
-// 	}
-
-// 	// bloco diagonal superior direita
-// 	if (isset($matrizComBombas[$l - 1][$c + 1])) {
-// 		if ($matrizComBombas[$l - 1][$c + 1] == $bomba) {
-// 			$bombaContador++;
-// 		}
-// 	}
-
-// 	// bloco da frente
-// 	if (isset($matrizComBombas[$l][$c + 1])) {
-// 		if ($matrizComBombas[$l][$c + 1] == $bomba) {
-// 			$bombaContador++;						
-// 		}
-// 	}
-
-// 	// bloco diagonal inferior direito
-// 	if (isset($matrizComBombas[$l + 1][$c + 1])) {
-// 		if ($matrizComBombas[$l + 1][$c + 1] == $bomba) {
-// 			$bombaContador++;
-// 		}
-// 	}
-
-// 	// bloco de baixo
-// 	if (isset($matrizComBombas[$l - 1][$c])) {
-// 		if ($matrizComBombas[$l - 1][$c] == $bomba) {
-// 			$bombaContador++;
-// 		}
-// 	}
-
-// 	// bloco diagonal inferior esquerdo
-// 	if (isset($matrizComBombas[$l + 1][$c - 1])) {
-// 		if ($matrizComBombas[$l + 1][$c - 1] == $bomba) {
-// 			$bombaContador++;
-// 		}
-// 	}		
-
-// 	// bloco de trás
-// 	if (isset($matrizComBombas[$l][$c - 1])) {
-// 		if ($matrizComBombas[$l][$c - 1] == $bomba) {
-// 			$bombaContador++;
-// 		}
-// 	}		
-
-// 	// bloco diagonal superior esquerdo 
-// 	if (isset($matrizComBombas[$l - 1][$c - 1])) {
-// 		if ($matrizComBombas[$l - 1][$c - 1] == $bomba) {
-// 			$bombaContador++;
-// 		}
-// 	}
-
-// 	return $bombaContador;
-
-// }
 
 if($acao != 'click') {
 
@@ -215,8 +153,6 @@ if($acao != 'click') {
 	// condição para apagar blocos
 	if (isset($acao) && $clickMouse == null) {
 	
-		echo "<script>console.log('click na linha {$clickLinha} e coluna {$clickColuna}.');</script>";
-		
 		foreach ($matrizComBombas as $l => $linha) {
 
 			foreach ($linha as $c => $coluna) {
@@ -285,10 +221,18 @@ if($acao != 'click') {
 	}
 
 	if ($clickMouse == $bomba) {
-		echo $bomba;
-		echo "<p>Você clicou em uma bomba. Jogo encerrado. :(</p>";
-		echo "<a href='mine_rebuild.php'>NEW GAME</a>";
-		die;
+		?>
+		<script>
+
+			var bomba = confirm('Você clicou em uma bomba. Jogo encerrado. :(');
+
+			if (bomba == true) {
+				window.location = "mine_rebuild.php";
+			}
+
+		</script>
+
+		<?php
 	}
 	
 }
@@ -308,8 +252,6 @@ if($acao != 'click') {
 
 		td {
 			padding: 20px;
-			background-color: gold;
-
 		}
 	</style>
 </head>
@@ -317,10 +259,10 @@ if($acao != 'click') {
 
 	<div style="text-align: center;">
 		<br>
-		<!-- <h1>Mines!</h1>		 -->
+		<h1>Mines!</h1>		
 		<a href="mine_rebuild.php" style="padding: 8px 12px; background-color: green; color: snow; border: #424242 solid 1px; text-decoration: none;">NEW</a>
-		<br><br>
-		<hr>
+		<br>
+		<br>
 		<br>
 	</div>
 
@@ -329,51 +271,38 @@ if($acao != 'click') {
 			
 			<?php
 
+				// r($matrizComBombas);		
+
+				// matriz apresentada no front
 				foreach ($matrizComBombas as $l => $linha) {
 
 					echo "<tr>";
 
 						foreach($linha as $c => $coluna) {
 
-							// if ($coluna == 0) {
-							// 	$coluna = 'transparent';
-							// } elseif ($coluna == null) {
-							// 	$coluna = 'crimson';
-							// } else {
-							// 	$coluna = 'blue';
-							// }
-			
-							// echo "<td onclick='javascript: window.location=\"mine_rebuild.php?acao=click&linha={$l}&coluna={$c}\"' style='background-color: {$coluna};'>{$coluna}</td>";
-							
-							if (isset($emptyBlock) && $coluna == 0) {
-								echo "<td onclick='javascript: window.location=\"mine_rebuild.php?acao=click&linha={$l}&coluna={$c}\"' style='background-color: transparent;'></td>";
-							} elseif ($coluna == null) {
-								echo "<td onclick='javascript: window.location=\"mine_rebuild.php?acao=click&linha={$l}&coluna={$c}\"' style='background-color: grey;'></td>";
-							} elseif ($coluna == $bomba) {
-								echo "<td onclick='javascript: window.location=\"mine_rebuild.php?acao=click&linha={$l}&coluna={$c}\"' style='background-color: crimson;'>{$coluna}</td>";
-							} else {
-								echo "<td onclick='javascript: window.location=\"mine_rebuild.php?acao=click&linha={$l}&coluna={$c}\"'>{$coluna}</td>";
-							}							
+							if ($coluna == $bomba) {
+								$coluna = '';
+								$tdColor = 'grey';
+							}
+
+							if (isset($emptyBlock) && $coluna != null) {
+								$tdColor = 'gold';
+								echo "<td style='background-color: {$tdColor};' onclick='javascript: window.location=\"mine_rebuild.php?acao=click&linha={$l}&coluna={$c}&empty=true\"';'>{$coluna}</td>";	
+							} else {						
+								$tdColor = ( isset($emptyBlock) && $coluna == null ) ? 'transparent' : 'grey';
+								echo "<td style='background-color: {$tdColor};' onclick='javascript: window.location=\"mine_rebuild.php?acao=click&linha={$l}&coluna={$c}&empty=true\"';'></td>";
+							}
 
 						}
-
-							// if (isset($emptyBlock) && $coluna == 0) {
-							// 	echo "<td onclick='javascript: window.location=\"mine_rebuild.php?acao=click&linha={$l}&coluna={$c}\"' style='background-color: transparent;'></td>";
-							// } elseif ($coluna == null) {
-							// 	echo "<td onclick='javascript: window.location=\"mine_rebuild.php?acao=click&linha={$l}&coluna={$c}\"' style='background-color: grey;'></td>";
-							// } elseif ($coluna == $bomba) {
-							// 	echo "<td onclick='javascript: window.location=\"mine_rebuild.php?acao=click&linha={$l}&coluna={$c}\"' style='background-color: crimson;'>{$coluna}</td>";
-							// } else {
-							// 	echo "<td onclick='javascript: window.location=\"mine_rebuild.php?acao=click&linha={$l}&coluna={$c}\"'>{$coluna}</td>";
-							// }
 
 					echo "</tr>";
 
 				}
-				
+
+				// apresentamos a linha e coluna que foram clicadas
 				if (!empty($matrizComBombas) && $acao == 'click') {
-					echo "<span style='color:snow; padding: 5px 8px; background-color: grey; margin:auto;'>você clicou na linha {$_REQUEST['linha']}, coluna {$_REQUEST['coluna']}</span>";
-					
+					echo "<script>console.log('Você clicou na linha {$clickLinha}, coluna {$clickColuna}');</script>";
+					echo "<script>console.log('Mouse click value: {$clickMouse}');</script>";
 				}			
 
 			?>
