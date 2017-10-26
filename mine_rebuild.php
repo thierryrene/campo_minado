@@ -1,11 +1,12 @@
 <?php
 
-session_start();
+if (!isset($_SESSION)) {
+	session_start();
+}
 
 require_once '../composer/vendor/autoload.php';    
 
 $linhas  = 10;
-// colunas com o mesmo valor das linhas
 $colunas = $linhas;
 $bombas = 2;
 $bomba = '@';
@@ -147,78 +148,6 @@ if($acao != 'click') {
 } else {
 
 	$matrizComBombas = $_SESSION['matrizComBombas'];
-
-	$clickMouse = $matrizComBombas[$clickLinha][$clickColuna];
-
-	// condição para apagar blocos
-	// if (isset($acao) && $clickMouse == null) {
-	
-	// 	foreach ($matrizComBombas as $l => $linha) {
-
-	// 		foreach ($linha as $c => $coluna) {
-			
-	// 			// bloco de cima
-	// 			if (isset($matrizComBombas[$l + 1][$c])) {
-	// 				if ($matrizComBombas[$l + 1][$c] == null) {
-	// 					$matrizComBombas[$l + 1][$c] = 'transparent';							
-	// 				}
-	// 			}
-
-	// 			// bloco diagonal superior direita
-	// 			if (isset($matrizComBombas[$l - 1][$c + 1])) {
-	// 				if ($matrizComBombas[$l - 1][$c + 1] == $bomba) {
-	// 					$bombaContador++;
-	// 				}
-	// 			}
-
-	// 			// bloco da frente
-	// 			if (isset($matrizComBombas[$l][$c + 1])) {
-	// 				if ($matrizComBombas[$l][$c + 1] == $bomba) {
-	// 					$bombaContador++;						
-	// 				}
-	// 			}
-
-	// 			// bloco diagonal inferior direito
-	// 			if (isset($matrizComBombas[$l + 1][$c + 1])) {
-	// 				if ($matrizComBombas[$l + 1][$c + 1] == $bomba) {
-	// 					$bombaContador++;
-	// 				}
-	// 			}
-
-	// 			// bloco de baixo
-	// 			if (isset($matrizComBombas[$l - 1][$c])) {
-	// 				if ($matrizComBombas[$l - 1][$c] == $bomba) {
-	// 					$bombaContador++;
-	// 				}
-	// 			}
-
-	// 			// bloco diagonal inferior esquerdo
-	// 			if (isset($matrizComBombas[$l + 1][$c - 1])) {
-	// 				if ($matrizComBombas[$l + 1][$c - 1] == $bomba) {
-	// 					$bombaContador++;
-	// 				}
-	// 			}		
-
-	// 			// bloco de trás
-	// 			if (isset($matrizComBombas[$l][$c - 1])) {
-	// 				if ($matrizComBombas[$l][$c - 1] == $bomba) {
-	// 					$bombaContador++;
-	// 				}
-	// 			}		
-
-	// 			// bloco diagonal superior esquerdo 
-	// 			if (isset($matrizComBombas[$l - 1][$c - 1])) {
-	// 				if ($matrizComBombas[$l - 1][$c - 1] == $bomba) {
-	// 					$bombaContador++;
-	// 				}
-	// 			}
-
-
-	// 		}
-
-	// 	}
-	
-	// }	
 	
 }
 
@@ -256,33 +185,97 @@ if($acao != 'click') {
 			
 			<?php
 
+				$clickMouse = $matrizComBombas[$clickLinha][$clickColuna];	
+
 				if ($clickMouse == $bomba) {
+
 					?>
+
 					<script>
 						var bomba = confirm('Você clicou em uma bomba. Jogo encerrado. :(');
 						if (bomba == true) {
 							window.location = "mine_rebuild.php";
 						}
 					</script>
+
 					<?php
 
 				}
-
+								
 				if ($clickMouse == null && isset($acao)) {
-					$matrizComBombas[$clickLinha][$clickColuna] = 'marked';
-				}
+					$matrizComBombas[$clickLinha][$clickColuna] = 'marked';					
+				}	
+
+				$_SESSION['matrizComBombas'] = $matrizComBombas; 			
 
 				// matriz apresentada no front
 				foreach ($matrizComBombas as $l => $linha) {
+
 					echo "<tr>";
+
 						foreach($linha as $c => $coluna) {
 
-							if ($matrizComBombas[$l][$c] == 'marked') {
+							$tdColor = 'grey';
+
+							if ($matrizComBombas[$l][$c] == 'marked') {	
+
 								$tdColor = 'transparent';
+
+								if (isset($matrizComBombas[$l - 1][$c])) {
+									if ($matrizComBombas[$l - 1][$c] != 'marked') {
+										$tdColor = 'gold';
+										$numbersAround = $coluna;
+									} else {
+										$tdColor = 'transparent';
+									}									
+								}
+
+								// if (isset($matrizComBombas[$l - 1][$c + 1] )) {
+								// 	$tdColor = 'gold';
+								// 	$numbersAround = $coluna;
+								// }
+
+								// if (isset($matrizComBombas[$l][$c + 1]) ) {
+								// 	$tdColor = 'gold';
+								// 	$numbersAround = $coluna;
+								// }
+
+								// if (isset($matrizComBombas[$l + 1][$c + 1]) ) {
+								// 	$tdColor = 'gold';
+								// 	$numbersAround = $coluna;
+								// }
+
+								// if (isset($matrizComBombas[$l + 1][$c]) ) {
+								// 	$tdColor = 'gold';
+								// 	$numbersAround = $coluna;
+								// }
+
+								// if (isset($matrizComBombas[$l + 1][$c - 1]) ) {
+								// 	$tdColor = 'gold';
+								// 	$numbersAround = $coluna;
+								// }
+
+								// if (isset($matrizComBombas[$l][$c - 1]) ) {
+								// 	$tdColor = 'gold';
+								// 	$numbersAround = $coluna;
+								// }
+
+								// if (isset($matrizComBombas[$l - 1][$c - 1]) ) {
+								// 	$tdColor = 'gold';
+								// 	$numbersAround = $coluna;
+								// }														
+
+							} 
+
+							if ($matrizComBombas[$l][$c] == 1 || $matrizComBombas[$l][$c] == 2) {
+								$tdColor = 'gold';
+								$numbersAround = $coluna;
 							}
 
-							echo "<td style='background-color: {$tdColor};' onclick='javascript: window.location=\"mine_rebuild.php?acao=click&linha={$l}&coluna={$c}&value={$coluna}\"';'></td>";	
+							echo "<td style='background-color: {$tdColor};' onclick='javascript: window.location=\"mine_rebuild.php?acao=click&linha={$l}&coluna={$c}\"';'>{$coluna}</td>";	
+
 						}
+
 					echo "</tr>";
 				}
 
@@ -290,9 +283,7 @@ if($acao != 'click') {
 				if (!empty($matrizComBombas) && $acao == 'click') {
 					echo "<script>console.log('Você clicou na linha {$clickLinha}, coluna {$clickColuna}');</script>";
 					echo "<script>console.log('Mouse click value: {$clickMouse}');</script>";
-				}	
-
-				
+				}				
 
 			?>
 
@@ -308,6 +299,6 @@ if($acao != 'click') {
 
 <?php
 
-r($matrizComBombas);
+r($matrizComBombas, $numbersAround);
 
 ?>
