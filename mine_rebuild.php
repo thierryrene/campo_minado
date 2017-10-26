@@ -221,23 +221,27 @@ if($acao != 'click') {
 
 							$tdColor = 'grey';
 
-							$hideText = 0;	
-
 							if ($matrizComBombas[$l][$c] == 'marked') {
 
-								$tdColor = 'transparent';
-	
+								$tdColor = 'transparent';	
+
 								if ($matrizComBombas[$l - 1][$c] != $bomba) {	 
 									echo "<script>console.log('o bloco na linha " . ($l - 1) . " e coluna {$c} tem número');</script>";
 									$cond = true;
-								}							
+									$tdColor = 'transparent';
+									$textColor = 'black';
+								}
 
 							}
-							
+
 							if ($cond == true) {
+
 								echo "<td style='background-color: {$tdColor}; color: {$textColor};' onclick='javascript: window.location=\"mine_rebuild.php?acao=click&linha={$l}&coluna={$c}\"';'>{$coluna}</td>";
+
 							} else {
+
 								echo "<td style='background-color:{$tdColor};' onclick='javascript: window.location=\"mine_rebuild.php?acao=click&linha={$l}&coluna={$c}\"';'></td>";
+
 							}							
 
 						}
@@ -248,7 +252,7 @@ if($acao != 'click') {
 				$_SESSION['matrizComBombas'] = $matrizComBombas; 
 
 				// apresentamos a linha e coluna que foram clicadas
-				if (!empty($matrizComBombas) && $acao == 'click') {
+				if ($acao == 'click') {
 					echo "<script>console.log('Você clicou na linha {$clickLinha}, coluna {$clickColuna}');</script>";
 					echo "<script>console.log('Mouse click value: {$clickMouse}');</script>";
 				}				
