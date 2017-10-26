@@ -151,89 +151,74 @@ if($acao != 'click') {
 	$clickMouse = $matrizComBombas[$clickLinha][$clickColuna];
 
 	// condição para apagar blocos
-	if (isset($acao) && $clickMouse == null) {
+	// if (isset($acao) && $clickMouse == null) {
 	
-		foreach ($matrizComBombas as $l => $linha) {
+	// 	foreach ($matrizComBombas as $l => $linha) {
 
-			foreach ($linha as $c => $coluna) {
+	// 		foreach ($linha as $c => $coluna) {
 			
-				// bloco de cima
-				if (isset($matrizComBombas[$l + 1][$c])) {
-					if ($matrizComBombas[$l + 1][$c] == null) {
-						$matrizComBombas[$l + 1][$c] = 'transparent';							
-					}
-				}
+	// 			// bloco de cima
+	// 			if (isset($matrizComBombas[$l + 1][$c])) {
+	// 				if ($matrizComBombas[$l + 1][$c] == null) {
+	// 					$matrizComBombas[$l + 1][$c] = 'transparent';							
+	// 				}
+	// 			}
 
-				// bloco diagonal superior direita
-				if (isset($matrizComBombas[$l - 1][$c + 1])) {
-					if ($matrizComBombas[$l - 1][$c + 1] == $bomba) {
-						$bombaContador++;
-					}
-				}
+	// 			// bloco diagonal superior direita
+	// 			if (isset($matrizComBombas[$l - 1][$c + 1])) {
+	// 				if ($matrizComBombas[$l - 1][$c + 1] == $bomba) {
+	// 					$bombaContador++;
+	// 				}
+	// 			}
 
-				// bloco da frente
-				if (isset($matrizComBombas[$l][$c + 1])) {
-					if ($matrizComBombas[$l][$c + 1] == $bomba) {
-						$bombaContador++;						
-					}
-				}
+	// 			// bloco da frente
+	// 			if (isset($matrizComBombas[$l][$c + 1])) {
+	// 				if ($matrizComBombas[$l][$c + 1] == $bomba) {
+	// 					$bombaContador++;						
+	// 				}
+	// 			}
 
-				// bloco diagonal inferior direito
-				if (isset($matrizComBombas[$l + 1][$c + 1])) {
-					if ($matrizComBombas[$l + 1][$c + 1] == $bomba) {
-						$bombaContador++;
-					}
-				}
+	// 			// bloco diagonal inferior direito
+	// 			if (isset($matrizComBombas[$l + 1][$c + 1])) {
+	// 				if ($matrizComBombas[$l + 1][$c + 1] == $bomba) {
+	// 					$bombaContador++;
+	// 				}
+	// 			}
 
-				// bloco de baixo
-				if (isset($matrizComBombas[$l - 1][$c])) {
-					if ($matrizComBombas[$l - 1][$c] == $bomba) {
-						$bombaContador++;
-					}
-				}
+	// 			// bloco de baixo
+	// 			if (isset($matrizComBombas[$l - 1][$c])) {
+	// 				if ($matrizComBombas[$l - 1][$c] == $bomba) {
+	// 					$bombaContador++;
+	// 				}
+	// 			}
 
-				// bloco diagonal inferior esquerdo
-				if (isset($matrizComBombas[$l + 1][$c - 1])) {
-					if ($matrizComBombas[$l + 1][$c - 1] == $bomba) {
-						$bombaContador++;
-					}
-				}		
+	// 			// bloco diagonal inferior esquerdo
+	// 			if (isset($matrizComBombas[$l + 1][$c - 1])) {
+	// 				if ($matrizComBombas[$l + 1][$c - 1] == $bomba) {
+	// 					$bombaContador++;
+	// 				}
+	// 			}		
 
-				// bloco de trás
-				if (isset($matrizComBombas[$l][$c - 1])) {
-					if ($matrizComBombas[$l][$c - 1] == $bomba) {
-						$bombaContador++;
-					}
-				}		
+	// 			// bloco de trás
+	// 			if (isset($matrizComBombas[$l][$c - 1])) {
+	// 				if ($matrizComBombas[$l][$c - 1] == $bomba) {
+	// 					$bombaContador++;
+	// 				}
+	// 			}		
 
-				// bloco diagonal superior esquerdo 
-				if (isset($matrizComBombas[$l - 1][$c - 1])) {
-					if ($matrizComBombas[$l - 1][$c - 1] == $bomba) {
-						$bombaContador++;
-					}
-				}
+	// 			// bloco diagonal superior esquerdo 
+	// 			if (isset($matrizComBombas[$l - 1][$c - 1])) {
+	// 				if ($matrizComBombas[$l - 1][$c - 1] == $bomba) {
+	// 					$bombaContador++;
+	// 				}
+	// 			}
 
 
-			}
+	// 		}
 
-		}
+	// 	}
 	
-	}
-
-	if ($clickMouse == $bomba) {
-		?>
-		<script>
-
-			var bomba = confirm('Você clicou em uma bomba. Jogo encerrado. :(');
-
-			if (bomba == true) {
-				window.location = "mine_rebuild.php";
-			}
-
-		</script>
-
-		<?php
-	}
+	// }	
 	
 }
 
@@ -249,7 +234,6 @@ if($acao != 'click') {
 		* {
 			font-family: arial;
 		}
-
 		td {
 			padding: 20px;
 		}
@@ -259,7 +243,7 @@ if($acao != 'click') {
 
 	<div style="text-align: center;">
 		<br>
-		<h1>Mines!</h1>		
+		<!-- <h1>Mines!</h1>		 -->
 		<a href="mine_rebuild.php" style="padding: 8px 12px; background-color: green; color: snow; border: #424242 solid 1px; text-decoration: none;">NEW</a>
 		<br>
 		<br>
@@ -267,47 +251,54 @@ if($acao != 'click') {
 	</div>
 
 	<div style="margin:auto;">
+
 		<table style="margin: auto;" border="1">
 			
 			<?php
 
-				// r($matrizComBombas);		
+				if ($clickMouse == $bomba) {
+					?>
+					<script>
+						var bomba = confirm('Você clicou em uma bomba. Jogo encerrado. :(');
+						if (bomba == true) {
+							window.location = "mine_rebuild.php";
+						}
+					</script>
+					<?php
+
+				}
+
+				if ($clickMouse == null && isset($acao)) {
+					$matrizComBombas[$clickLinha][$clickColuna] = 'marked';
+				}
 
 				// matriz apresentada no front
 				foreach ($matrizComBombas as $l => $linha) {
-
 					echo "<tr>";
-
 						foreach($linha as $c => $coluna) {
 
-							if ($coluna == $bomba) {
-								$coluna = '';
-								$tdColor = 'grey';
+							if ($matrizComBombas[$l][$c] == 'marked') {
+								$tdColor = 'transparent';
 							}
 
-							if (isset($emptyBlock) && $coluna != null) {
-								$tdColor = 'gold';
-								echo "<td style='background-color: {$tdColor};' onclick='javascript: window.location=\"mine_rebuild.php?acao=click&linha={$l}&coluna={$c}&empty=true\"';'>{$coluna}</td>";	
-							} else {						
-								$tdColor = ( isset($emptyBlock) && $coluna == null ) ? 'transparent' : 'grey';
-								echo "<td style='background-color: {$tdColor};' onclick='javascript: window.location=\"mine_rebuild.php?acao=click&linha={$l}&coluna={$c}&empty=true\"';'></td>";
-							}
-
+							echo "<td style='background-color: {$tdColor};' onclick='javascript: window.location=\"mine_rebuild.php?acao=click&linha={$l}&coluna={$c}&value={$coluna}\"';'></td>";	
 						}
-
 					echo "</tr>";
-
 				}
 
 				// apresentamos a linha e coluna que foram clicadas
 				if (!empty($matrizComBombas) && $acao == 'click') {
 					echo "<script>console.log('Você clicou na linha {$clickLinha}, coluna {$clickColuna}');</script>";
 					echo "<script>console.log('Mouse click value: {$clickMouse}');</script>";
-				}			
+				}	
+
+				
 
 			?>
 
 		</table>
+
+
 
 	</div>
 
