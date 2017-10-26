@@ -6,7 +6,7 @@ if (!isset($_SESSION)) {
 
 require_once '../composer/vendor/autoload.php';    
 
-$linhas  = 10;
+$linhas  = 5;
 $colunas = $linhas;
 $bombas = 2;
 $bomba = '@';
@@ -134,6 +134,7 @@ if($acao != 'click') {
 
 				$bombaContador = 0;									
 				
+				// gambs para setar valor das células como null
 				if ($matrizComBombas[$l][$c] == 0) {
 					$matrizComBombas[$l][$c] = null;
 				}
@@ -204,80 +205,47 @@ if($acao != 'click') {
 								
 				if ($clickMouse == null && isset($acao)) {
 					$matrizComBombas[$clickLinha][$clickColuna] = 'marked';					
-				}	
-
-				$_SESSION['matrizComBombas'] = $matrizComBombas; 			
+				}							
 
 				// matriz apresentada no front
 				foreach ($matrizComBombas as $l => $linha) {
 
 					echo "<tr>";
 
-						foreach($linha as $c => $coluna) {
+						foreach($linha as $c => $coluna) {							
+
+							// condição para não exibir texto nas células da tabela
+							if ($coluna == '@' || $coluna == 'marked') {
+								$coluna = '';
+							}
 
 							$tdColor = 'grey';
 
-							if ($matrizComBombas[$l][$c] == 'marked') {	
+							$hideText = 0;	
+
+							if ($matrizComBombas[$l][$c] == 'marked') {
 
 								$tdColor = 'transparent';
+	
+								if ($matrizComBombas[$l - 1][$c] != $bomba) {	 
+									echo "<script>console.log('o bloco na linha " . ($l - 1) . " e coluna {$c} tem número');</script>";
+									$cond = true;
+								}							
 
-								if (isset($matrizComBombas[$l - 1][$c])) {
-									if ($matrizComBombas[$l - 1][$c] != 'marked') {
-										$tdColor = 'gold';
-										$numbersAround = $coluna;
-									} else {
-										$tdColor = 'transparent';
-									}									
-								}
-
-								// if (isset($matrizComBombas[$l - 1][$c + 1] )) {
-								// 	$tdColor = 'gold';
-								// 	$numbersAround = $coluna;
-								// }
-
-								// if (isset($matrizComBombas[$l][$c + 1]) ) {
-								// 	$tdColor = 'gold';
-								// 	$numbersAround = $coluna;
-								// }
-
-								// if (isset($matrizComBombas[$l + 1][$c + 1]) ) {
-								// 	$tdColor = 'gold';
-								// 	$numbersAround = $coluna;
-								// }
-
-								// if (isset($matrizComBombas[$l + 1][$c]) ) {
-								// 	$tdColor = 'gold';
-								// 	$numbersAround = $coluna;
-								// }
-
-								// if (isset($matrizComBombas[$l + 1][$c - 1]) ) {
-								// 	$tdColor = 'gold';
-								// 	$numbersAround = $coluna;
-								// }
-
-								// if (isset($matrizComBombas[$l][$c - 1]) ) {
-								// 	$tdColor = 'gold';
-								// 	$numbersAround = $coluna;
-								// }
-
-								// if (isset($matrizComBombas[$l - 1][$c - 1]) ) {
-								// 	$tdColor = 'gold';
-								// 	$numbersAround = $coluna;
-								// }														
-
-							} 
-
-							if ($matrizComBombas[$l][$c] == 1 || $matrizComBombas[$l][$c] == 2) {
-								$tdColor = 'gold';
-								$numbersAround = $coluna;
 							}
-
-							echo "<td style='background-color: {$tdColor};' onclick='javascript: window.location=\"mine_rebuild.php?acao=click&linha={$l}&coluna={$c}\"';'>{$coluna}</td>";	
+							
+							if ($cond == true) {
+								echo "<td style='background-color: {$tdColor}; color: {$textColor};' onclick='javascript: window.location=\"mine_rebuild.php?acao=click&linha={$l}&coluna={$c}\"';'>{$coluna}</td>";
+							} else {
+								echo "<td style='background-color:{$tdColor};' onclick='javascript: window.location=\"mine_rebuild.php?acao=click&linha={$l}&coluna={$c}\"';'></td>";
+							}							
 
 						}
 
 					echo "</tr>";
 				}
+
+				$_SESSION['matrizComBombas'] = $matrizComBombas; 
 
 				// apresentamos a linha e coluna que foram clicadas
 				if (!empty($matrizComBombas) && $acao == 'click') {
@@ -299,6 +267,43 @@ if($acao != 'click') {
 
 <?php
 
-r($matrizComBombas, $numbersAround);
+r($matrizComBombas, $cond);
+
+
+// if ($matrizComBombas[$l - 1][$c + 1] != 'marked' && $matrizComBombas[$l - 1][$c + 1] != null) {
+// 	echo "<script>console.log('o bloco na linha " . ($l - 1) . " e coluna " . ($c + 1) . " tem número');</script>";
+// 	$tdColor = 'gold';
+// 	$x = $coluna;
+// }
+
+// if ($matrizComBombas[$l - 1][$c + 1] != 'marked' && $matrizComBombas[$l - 1][$c + 1] != null) {
+// 	echo "<script>console.log('o bloco na linha " . ($l - 1) . " e coluna " . ($c + 1) . " tem número');</script>";
+// }
+
+// if ($matrizComBombas[$l][$c + 1] != 'marked' && $matrizComBombas[$l][$c + 1] != null) {
+// 	echo "<script>console.log('o bloco na linha {$l} e coluna " . ($c + 1) . " tem número');</script>";
+// }
+
+// if ($matrizComBombas[$l + 1][$c + 1] != 'marked' && $matrizComBombas[$l + 1][$c + 1] != null) {
+// 	echo "<script>console.log('o bloco na linha " . ($l + 1) . " e coluna " . ($c + 1) . " tem número');</script>";
+// }
+
+// if ($matrizComBombas[$l + 1][$c] != 'marked' && $matrizComBombas[$l + 1][$c] != null) {
+// 	echo "<script>console.log('o bloco na linha " . ($l + 1) . " e coluna {$c} tem número');</script>";
+// }
+
+// if ($matrizComBombas[$l + 1][$c - 1] != 'marked' && $matrizComBombas[$l + 1][$c - 1] != null) {
+// 	echo "<script>console.log('o bloco na linha " . ($l + 1) . " e coluna " . ($c - 1) . " tem número');</script>";
+// }
+
+// if ($matrizComBombas[$l][$c - 1] != 'marked' && $matrizComBombas[$l][$c - 1] != null) {
+// 	echo "<script>console.log('o bloco na linha {$l} e coluna " . ($c - 1) . " tem número');</script>";
+// }
+
+// if ($matrizComBombas[$l - 1][$c - 1] != 'marked' && $matrizComBombas[$l - 1][$c - 1] != null) {
+// 	echo "<script>console.log('o bloco na linha " . ($l - 1) . " e coluna " . ($c - 1) . " tem número');</script>";
+// }
 
 ?>
+
+
