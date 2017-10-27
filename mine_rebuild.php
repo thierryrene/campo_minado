@@ -6,7 +6,7 @@ if (!isset($_SESSION)) {
 
 require_once '../composer/vendor/autoload.php';    
 
-$linhas  = 5;
+$linhas  = 10;
 $colunas = $linhas;
 $bombas = 2;
 $bomba = '@';
@@ -149,7 +149,6 @@ if($acao != 'click') {
 } else {
 
 	$matrizComBombas = $_SESSION['matrizComBombas'];
-	
 }
 
 ?>
@@ -186,75 +185,84 @@ if($acao != 'click') {
 			
 			<?php
 
-				$clickMouse = $matrizComBombas[$clickLinha][$clickColuna];	
+				$clickMouse = $matrizComBombas[$clickLinha][$clickColuna];							
+								
+				if (isset($acao)) {
 
-				if ($clickMouse == $bomba) {
+					$matrizComBombas[$clickLinha][$clickColuna] = 'marked';
 
-					?>
+					// l - 1
+					if ($matrizComBombas[$clickLinha - 1][$clickColuna]) {
+						$matrizComBombas[$clickLinha - 1][$clickColuna] = 'marked';
+					}
 
-					<script>
-						var bomba = confirm('Você clicou em uma bomba. Jogo encerrado. :(');
-						if (bomba == true) {
-							window.location = "mine_rebuild.php";
-						}
-					</script>
+					// l - 1 | c + 1
+					if ($matrizComBombas[$clickLinha - 1][$clickColuna + 1]) {
+						$matrizComBombas[$clickLinha - 1][$clickColuna + 1] = 'marked';
+					}
 
-					<?php
+					// c + 1
+					if ($matrizComBombas[$clickLinha][$clickColuna + 1]) {
+						$matrizComBombas[$clickLinha][$clickColuna + 1] = 'marked';
+					}
+
+					// l + 1 | c + 1
+					if ($matrizComBombas[$clickLinha + 1][$clickColuna + 1]) {
+						$matrizComBombas[$clickLinha + 1][$clickColuna + 1] = 'marked';
+					}
+
+					// l + 1
+					if ($matrizComBombas[$clickLinha + 1][$clickColuna]) {
+						$matrizComBombas[$clickLinha + 1][$clickColuna] = 'marked';
+					}
+
+					// l + 1 | c - 1
+					if ($matrizComBombas[$clickLinha + 1][$clickColuna - 1]) {
+						$matrizComBombas[$clickLinha + 1][$clickColuna - 1] = 'marked';
+					}
+
+					// c - 1
+					if ($matrizComBombas[$clickLinha][$clickColuna - 1]) {
+						$matrizComBombas[$clickLinha][$clickColuna - 1] = 'marked';
+					}					
+
+					// l - 1 | c - 1
+					if ($matrizComBombas[$clickLinha - 1][$clickColuna - 1]) {
+						$matrizComBombas[$clickLinha - 1][$clickColuna - 1] = 'marked';
+					}
 
 				}
-								
-				if ($clickMouse == null && isset($acao)) {
-					$matrizComBombas[$clickLinha][$clickColuna] = 'marked';					
-				}							
 
 				// matriz apresentada no front
 				foreach ($matrizComBombas as $l => $linha) {
 
 					echo "<tr>";
 
-						foreach($linha as $c => $coluna) {							
+						 foreach ($linha as $c => $coluna) {
 
-							// condição para não exibir texto nas células da tabela
-							if ($coluna == '@' || $coluna == 'marked') {
-								$coluna = '';
-							}
+						 	// se não houver acao, nenhum valor é exibido na matriz
+						 	if (!$acao && $clickMouse == 'marked') {
+						 		$coluna = '';
+						 	}
+						 	
+						 	if ($coluna == 'marked') {
+						 		$tdColor = 'transparent';
+						 	} else {
+						 		$tdColor = 'grey';
+						 	}
 
-							$tdColor = 'grey';
+						 	echo "<td style='background-color: {$tdColor};' onclick='javascript: window.location=\"mine_rebuild.php?acao=click&linha={$l}&coluna={$c}\"';'>{$coluna}</td>";		
 
-							if ($matrizComBombas[$l][$c] == 'marked') {
-
-								$tdColor = 'transparent';	
-
-								if ($matrizComBombas[$l - 1][$c] != $bomba) {	 
-									echo "<script>console.log('o bloco na linha " . ($l - 1) . " e coluna {$c} tem número');</script>";
-									$cond = true;
-									$tdColor = 'transparent';
-									$textColor = 'black';
-								}
-
-							}
-
-							if ($cond == true) {
-
-								echo "<td style='background-color: {$tdColor}; color: {$textColor};' onclick='javascript: window.location=\"mine_rebuild.php?acao=click&linha={$l}&coluna={$c}\"';'>{$coluna}</td>";
-
-							} else {
-
-								echo "<td style='background-color:{$tdColor};' onclick='javascript: window.location=\"mine_rebuild.php?acao=click&linha={$l}&coluna={$c}\"';'></td>";
-
-							}							
-
-						}
+						 }
 
 					echo "</tr>";
 				}
 
-				$_SESSION['matrizComBombas'] = $matrizComBombas; 
+				$_SESSION['matrizComBombas'] = $matrizComBombas;				 
 
 				// apresentamos a linha e coluna que foram clicadas
-				if ($acao == 'click') {
+				if ($acao) {
 					echo "<script>console.log('Você clicou na linha {$clickLinha}, coluna {$clickColuna}');</script>";
-					echo "<script>console.log('Mouse click value: {$clickMouse}');</script>";
 				}				
 
 			?>
@@ -265,13 +273,41 @@ if($acao != 'click') {
 
 	</div>
 
+	<?php 
+
+		if ($clickMouse == $bomba) {
+			?>
+			<script>
+				var bomba = confirm('Você clicou em uma bomba. Jogo encerrado. :(');
+				if (bomba == true) {
+					window.location = "mine_rebuild.php";
+				}
+			</script>
+			<?php
+		}
+
+	?>
+
 	
 </body>
 </html>
 
 <?php
 
-r($matrizComBombas, $cond);
+r($matrizComBombas, $cond, $matrizComBombas[$clickLinha][$clickColuna]);
+
+
+// if (isset($matrizComBombas[$l + 1][$c])) {
+// 	$matrizMarcada[$l + 1][$c] = 'x';
+// 	echo "<script>console.log('o bloco abaixo tem numero');</script>";
+// }
+
+// if (isset($matrizComBombas[$l][$c - 1])) {
+// 	$matrizMarcada[$l][$c - 1] = 'x';
+// 	echo "<script>console.log('o bloco de trás tem numero');</script>";
+// }
+
+
 
 
 // if ($matrizComBombas[$l - 1][$c + 1] != 'marked' && $matrizComBombas[$l - 1][$c + 1] != null) {
@@ -306,6 +342,35 @@ r($matrizComBombas, $cond);
 
 // if ($matrizComBombas[$l - 1][$c - 1] != 'marked' && $matrizComBombas[$l - 1][$c - 1] != null) {
 // 	echo "<script>console.log('o bloco na linha " . ($l - 1) . " e coluna " . ($c - 1) . " tem número');</script>";
+// }
+
+
+
+
+// foreach($linha as $c => $coluna) {							
+
+// 	// condição para não exibir texto nas células da tabela
+// 	// if ($coluna == '@' || $coluna == 'marked' || $coluna == 1 || $coluna == 2) {
+// 	// 	$coluna = '';
+// 	// }	
+	
+// 	// cor padrão da matriz
+// 	$tdColor = 'grey';					
+
+// 	if ($matrizComBombas[$l][$c] == 'marked') {
+// 		$tdColor = 'transparent';	
+// 		if (isset($matrizComBombas[$l - 1][$c]) && $matrizComBombas[$l - 1][$c] != 'marked') {
+// 			$matrizComBombas[$l - 1][$c] = 'x';								
+// 			echo "<script>console.log('o bloco acima tem numero');</script>";						
+// 		}
+// 	}		
+
+// 	if ($matrizComBombas[$l - 1][$c] == 'x') {
+// 		echo "<td style='background-color: transparent;' onclick='javascript: window.location=\"mine_rebuild.php?acao=click&linha={$l}&coluna={$c}\"';'>{$coluna}</td>";
+// 	} else {
+// 		echo "<td style='background-color: {$tdColor};' onclick='javascript: window.location=\"mine_rebuild.php?acao=click&linha={$l}&coluna={$c}\"';'>{$coluna}</td>";
+// 	}						
+
 // }
 
 ?>
