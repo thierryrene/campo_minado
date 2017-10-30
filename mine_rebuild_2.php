@@ -4,7 +4,9 @@ if (!isset($_SESSION)) {
 	session_start();
 }
 
-require_once '../composer/vendor/autoload.php';    
+if ($_SERVER['SERVER_NAME'] == 'localhost') {
+	require_once '../composer/vendor/autoload.php';    
+}
 
 $linhas  = 5;
 $colunas = $linhas;
@@ -172,13 +174,7 @@ if($acao != 'click') {
 <body>
 
 	<div style="text-align: center;">
-		<br>
-		<!-- <h1>Mines!</h1>		 -->
-		<a href="mine_rebuild_2.php" style="padding: 8px 12px; background-color: green; color: snow; border: #424242 solid 1px; text-decoration: none;">NEW</a>
-		<a href="mine_rebuild_2.php?s_destroy=1" style="padding: 8px 12px; background-color: crimson; color: snow; border: #424242 solid 1px; text-decoration: none;">DESTROY SESSION</a>
-		<br>
-		<br>
-		<br>
+		<h1>Mines!</h1>				
 	</div>
 
 	<div style="margin:auto;" align="center">
@@ -209,7 +205,7 @@ if($acao != 'click') {
 					$text = 0;
 				}
 
-				r($clickBomba);
+				// r($clickBomba);
 
 				// matriz apresentada no front
 				foreach ($matrizComBombas as $l => $linha) {
@@ -218,13 +214,13 @@ if($acao != 'click') {
 
 						 foreach ($linha as $c => $coluna) {
 
-						 	if ($coluna == null) {
+						 	if ($coluna == null && $coluna <= $bombas) {
 						 		$contadorDaVitoria++;						 		
 						 	}
 
 						 	if ($coluna == 'x') {
-						 		$coluna = '';
 						 		$tdColor = 'transparent';
+						 		$coluna = '';
 						 	}
 
 						 	if ($acao && gettype($matrizComBombas[$l][$c]) == string && $matrizComBombas[$l][$c] != $bomba) {
@@ -235,7 +231,7 @@ if($acao != 'click') {
 						 		$text = 0;
 						 	}
 
-						 	if ($clickBomba) {
+						 	if ($acao && $clickBomba) {
 						 		$tdColor = 'transparent';
 						 	}
 
@@ -250,6 +246,13 @@ if($acao != 'click') {
 
 		</table>
 
+	</div>
+
+	<div style="text-align: center;">
+		<br>
+		<br>	
+		<a href="mine_rebuild_2.php" style="padding: 8px 12px; background-color: green; color: snow; border: #424242 solid 1px; text-decoration: none;">NEW</a>
+		<a href="mine_rebuild_2.php?s_destroy=1" style="padding: 8px 12px; background-color: crimson; color: snow; border: #424242 solid 1px; text-decoration: none;">DESTROY SESSION</a>
 	</div>
 	
 </body>
@@ -283,11 +286,11 @@ if ($clickMouse == $bomba) {
 }
 
 if ($_REQUEST['s_destroy'] == 1) {	
-	echo "<h3 align='center' >SESSION DESTROYED!</h3>";
+	echo "<h3 align='center'>SESSION DESTROYED!</h3>";
 	session_destroy();
 }
 
-r($contadorDaVitoria, $fim, $clickBomba, $matrizComBombas, $_SESSION);
+// r($contadorDaVitoria, $fim, $clickBomba, $matrizComBombas, $_SESSION);
 
 ?>
 
