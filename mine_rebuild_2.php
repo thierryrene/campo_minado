@@ -148,10 +148,7 @@ if($acao != 'click') {
 
 } else {
 
-	$matrizComBombas = $_SESSION['matrizComBombas'];	
-
-	// copia da matriz para marcar blocos
-	$matrizMarcada = $matrizComBombas;
+	$matrizComBombas = $_SESSION['matrizComBombas'];
 
 }
 
@@ -177,7 +174,8 @@ if($acao != 'click') {
 	<div style="text-align: center;">
 		<br>
 		<!-- <h1>Mines!</h1>		 -->
-		<a href="mine_rebuild.php" style="padding: 8px 12px; background-color: green; color: snow; border: #424242 solid 1px; text-decoration: none;">NEW</a>
+		<a href="mine_rebuild_2.php" style="padding: 8px 12px; background-color: green; color: snow; border: #424242 solid 1px; text-decoration: none;">NEW</a>
+		<a href="mine_rebuild_2.php?s_destroy=1" style="padding: 8px 12px; background-color: crimson; color: snow; border: #424242 solid 1px; text-decoration: none;">DESTROY SESSION</a>
 		<br>
 		<br>
 		<br>
@@ -190,21 +188,29 @@ if($acao != 'click') {
 			<?php
 
 				// capturamos o valor do click
-				$clickMouse = $matrizComBombas[$clickLinha][$clickColuna];
-
-				// condição que encerra jogo se clicar na bomba
-				if ($clickMouse == $bomba) {
-					$clickBomba = true;
-					echo "<h3>¯\_(ツ)_/¯</h3>";
-				}					
-				
-				// marcamos o bloco clicado com 'x' se ação estiver setada e o bloco for null
-				if (isset($acao) && $matrizComBombas[$clickLinha][$clickColuna] != $bomba) {
-					$matrizMarcada[$clickLinha][$clickColuna] = 'x';	
-					// $matrizComBombas[$clickLinha][$clickColuna] = 'x';					
+				if (isset($clickLinha) && isset($clickColuna)) {
+					$clickMouse = $matrizComBombas[$clickLinha][$clickColuna];							
 				}
 
-				$contadorDaVitoria = 0;
+
+				
+				// marcamos o bloco clicado com 'x' se ação estiver setada e o bloco for direfente de bomba
+				if (isset($acao) && $matrizComBombas[$clickLinha][$clickColuna] == null) {
+					$matrizComBombas[$clickLinha][$clickColuna] = 'x';	
+					$marked = true;
+					$_SESSION['matrizComBombas'] = $matrizComBombas;				
+				}
+
+				// se não houver ação, esse é o estado inicial do jogo
+				if (!$acao) {
+					$tdColor = 'grey';
+					$text = 0;
+				}
+
+				// se houver a acao e se fim for igual a true
+				if ($acao && $fim) {
+					$tdColor = 'grey';
+				}	
 
 				// matriz apresentada no front
 				foreach ($matrizComBombas as $l => $linha) {
@@ -213,55 +219,29 @@ if($acao != 'click') {
 
 						 foreach ($linha as $c => $coluna) {
 
-						 	$tdColor = 'grey';
-						 	$text = 0;
-
-						 	// contamos quantos campos null existem na matriz
 						 	if ($coluna == null) {
-						 		$contadorDaVitoria++;
-						 	}					 						 	
-
-						 	if ($matrizMarcada[$l][$c] == 'x') {
-						 		$tdColor = 'transparent';						 		
-						 	}						 	
-
-						 	if ($fim == true || $clickBomba == true) {
+						 		$contadorDaVitoria++;						 		
+						 	}
+						 	
+						 	if ($coluna == 'x') {
 						 		$tdColor = 'transparent';
-						 		$text = '10px';
-						 		if ($coluna == $bomba) {
-						 			$tdColor = 'crimson';
-						 		}
 						 	}
 
-						 	if ($coluna != $bomba && $acao) {
-						 		echo "<td style='background-color: {$tdColor};font-size: {$text};' onclick='javascript: window.location=\"mine_rebuild.php?acao=click&linha={$l}&coluna={$c}&marked=x\"';'>{$coluna}</td>";
-						 	} else {
-						 		echo "<td style='background-color: {$tdColor};font-size: {$text};' onclick='javascript: window.location=\"mine_rebuild.php?acao=click&linha={$l}&coluna={$c}\"';'>{$coluna}</td>";
-						 	}
-			 	
+						 	if (isset($acao) && $matrizComBombas[$l][$c] == 1) {
+								$matrizComBombas[$l][$c] = 1;
+								$tdColor = 'transparent';
+							}
+
+						 	echo "<td style='background-color: {$tdColor};font-size: {$text};' onclick='javascript: window.location=\"mine_rebuild_2.php?acao=click&linha={$l}&coluna={$c}\"';'>{$coluna}</td>";			 	
 						 }
 
-					echo "</tr>";
-				
-				}			
+					echo "</tr>";	
 
-				// DEBUG
-				if ($acao) {
-					echo "<script>console.log('Você clicou na linha {$clickLinha}, coluna {$clickColuna}');</script>";
 				}
-
-				// gravamos as alterações na matriz da sessão para não perder após recarregar a página
-				$_SESSION['matrizComBombas'] = $matrizComBombas;
 				
 			?>
 
 		</table>
-
-		<?php
-			// if ($clickBomba == true) {
-			// 	echo '<iframe src="https://giphy.com/embed/GW10shdM3oXok" width="480" height="377" align="center" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/ace-ventura-loser-GW10shdM3oXok">via GIPHY</a></p>';
-			// }
-		?>
 
 	</div>
 	
@@ -270,69 +250,35 @@ if($acao != 'click') {
 
 <?php
 
-r($matrizComBombas, $matrizMarcada, $_SESSION, $contadorDaVitoria);
+// DEBUG
+if ($acao) {
+	echo "<script>console.log('Você clicou na linha {$clickLinha}, coluna {$clickColuna}');</script>";
+}
 
-// if ($coluna == $bomba) {
-// 	$tdColor = 'crimson';
-// } elseif ($coluna != null && $coluna != 'x') {
-// 	$tdColor = 'gold';
-// }
+if ($contadorDaVitoria <= 0) {
+	$fim = true;	
+} else {
+	$fim = false;
+}
 
-// // l - 1
-// if (isset($matrizComBombas[$clickLinha - 1][$clickColuna])) {
-// 	if ($matrizComBombas[$clickLinha - 1][$clickColuna] == null) {
-// 		$matrizComBombas[$clickLinha - 1][$clickColuna] = 'x';
-// 	}
-// }
+// condicao que encerra jogo se todos os blocos vazios forem marcados
+if ($fim == true && $clickMouse != $bomba) {
+	echo "<h3 align='center' style='color: green;'>YOU WIN!</h3>";
+}
 
-// // l - 1 | c + 1
-// if (isset($matrizComBombas[$clickLinha - 1][$clickColuna + 1])) {
-// 	if ($matrizComBombas[$clickLinha - 1][$clickColuna + 1] != $bomba) {
-// 		$matrizComBombas[$clickLinha - 1][$clickColuna + 1] = 'x';
-// 	}
-// }
+// condição que encerra jogo aoclicar na bomba
+if ($clickMouse == $bomba) {		
+	$clickBomba = true;
+	echo "<h3 align='center' style='color: crimson;'>¯\_(ツ)_/¯</h3>
+		  <h3 align='center' style='color: crimson;'>YOU LOSE!</h3>";
+}
 
-// // c + 1
-// if (isset($matrizComBombas[$clickLinha][$clickColuna + 1])) {
-// 	if ($matrizComBombas[$clickLinha][$clickColuna + 1] != $bomba) {
-// 		$matrizComBombas[$clickLinha][$clickColuna + 1] = 'x';
-// 	}
-// }
+if ($_REQUEST['s_destroy'] == 1) {	
+	echo "<h3 align='center' >SESSION DESTROYED!</h3>";
+	session_destroy();
+}
 
-// // l - 1 | c + 1
-// if (isset($matrizComBombas[$clickLinha + 1][$clickColuna + 1])) {
-// 	if ($matrizComBombas[$clickLinha + 1][$clickColuna + 1] != $bomba) {
-// 		$matrizComBombas[$clickLinha + 1][$clickColuna + 1] = 'x';
-// 	}
-// }
-
-// // l + 1
-// if (isset($matrizComBombas[$clickLinha + 1][$clickColuna])) {
-// 	if ($matrizComBombas[$clickLinha + 1][$clickColuna] != $bomba) {
-// 		$matrizComBombas[$clickLinha + 1][$clickColuna] = 'x';
-// 	}
-// }
-
-// // l + 1 | c - 1
-// if (isset($matrizComBombas[$clickLinha + 1][$clickColuna - 1])) {
-// 	if ($matrizComBombas[$clickLinha + 1][$clickColuna - 1] != $bomba) {
-// 		$matrizComBombas[$clickLinha + 1][$clickColuna - 1] = 'x';
-// 	}
-// }
-
-// // c - 1
-// if (isset($matrizComBombas[$clickLinha][$clickColuna - 1])) {
-// 	if ($matrizComBombas[$clickLinha][$clickColuna - 1] != $bomba) {
-// 		$matrizComBombas[$clickLinha][$clickColuna - 1] = 'x';
-// 	}
-// }
-
-// // c - 1
-// if (isset($matrizComBombas[$clickLinha - 1][$clickColuna - 1])) {
-// 	if ($matrizComBombas[$clickLinha - 1][$clickColuna - 1] != $bomba) {
-// 		$matrizComBombas[$clickLinha - 1][$clickColuna - 1] = 'x';
-// 	}
-// }
+r($fim, $clickBomba, $matrizComBombas);
 
 ?>
 
