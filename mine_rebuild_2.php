@@ -252,7 +252,7 @@ if($acao != 'click') {
 		<br>
 		<br>	
 		<a href="mine_rebuild_2.php" style="padding: 8px 12px; background-color: green; color: snow; border: #424242 solid 1px; text-decoration: none;">NEW</a>
-		<a href="mine_rebuild_2.php?s_destroy=1" style="padding: 8px 12px; background-color: crimson; color: snow; border: #424242 solid 1px; text-decoration: none;">DESTROY SESSION</a>
+		<!-- <a href="mine_rebuild_2.php?s_destroy=1" style="padding: 8px 12px; background-color: crimson; color: snow; border: #424242 solid 1px; text-decoration: none;">DESTROY SESSION</a> -->
 	</div>
 	
 </body>
