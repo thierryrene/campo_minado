@@ -192,12 +192,14 @@ if($acao != 'click') {
 					$clickMouse = $matrizComBombas[$clickLinha][$clickColuna];							
 				}
 
-
-				
 				// marcamos o bloco clicado com 'x' se ação estiver setada e o bloco for direfente de bomba
 				if (isset($acao) && $matrizComBombas[$clickLinha][$clickColuna] == null) {
-					$matrizComBombas[$clickLinha][$clickColuna] = 'x';	
-					$marked = true;
+					$matrizComBombas[$clickLinha][$clickColuna] = 'x';
+					$_SESSION['matrizComBombas'] = $matrizComBombas;				
+				}
+
+				if (isset($acao) && $matrizComBombas[$clickLinha][$clickColuna] <= $bombas) {
+					$matrizComBombas[$clickLinha][$clickColuna] = "{$matrizComBombas[$clickLinha][$clickColuna]}";
 					$_SESSION['matrizComBombas'] = $matrizComBombas;				
 				}
 
@@ -207,10 +209,7 @@ if($acao != 'click') {
 					$text = 0;
 				}
 
-				// se houver a acao e se fim for igual a true
-				if ($acao && $fim) {
-					$tdColor = 'grey';
-				}	
+				r($clickBomba);
 
 				// matriz apresentada no front
 				foreach ($matrizComBombas as $l => $linha) {
@@ -222,15 +221,23 @@ if($acao != 'click') {
 						 	if ($coluna == null) {
 						 		$contadorDaVitoria++;						 		
 						 	}
-						 	
+
 						 	if ($coluna == 'x') {
+						 		$coluna = '';
 						 		$tdColor = 'transparent';
 						 	}
 
-						 	if (isset($acao) && $matrizComBombas[$l][$c] == 1) {
-								$matrizComBombas[$l][$c] = 1;
-								$tdColor = 'transparent';
-							}
+						 	if ($acao && gettype($matrizComBombas[$l][$c]) == string && $matrizComBombas[$l][$c] != $bomba) {
+						 		$tdColor = 'transparent';
+						 		$text = '10px';
+						 	} else {
+						 		$tdColor = 'grey';
+						 		$text = 0;
+						 	}
+
+						 	if ($clickBomba) {
+						 		$tdColor = 'transparent';
+						 	}
 
 						 	echo "<td style='background-color: {$tdColor};font-size: {$text};' onclick='javascript: window.location=\"mine_rebuild_2.php?acao=click&linha={$l}&coluna={$c}\"';'>{$coluna}</td>";			 	
 						 }
@@ -270,7 +277,9 @@ if ($fim == true && $clickMouse != $bomba) {
 if ($clickMouse == $bomba) {		
 	$clickBomba = true;
 	echo "<h3 align='center' style='color: crimson;'>¯\_(ツ)_/¯</h3>
-		  <h3 align='center' style='color: crimson;'>YOU LOSE!</h3>";
+		  <h3 align='center' style='color: crimson;'>YOU LOSE!</h3>";	
+} else {
+	$clickBomba = false;
 }
 
 if ($_REQUEST['s_destroy'] == 1) {	
@@ -278,7 +287,7 @@ if ($_REQUEST['s_destroy'] == 1) {
 	session_destroy();
 }
 
-r($fim, $clickBomba, $matrizComBombas);
+r($contadorDaVitoria, $fim, $clickBomba, $matrizComBombas, $_SESSION);
 
 ?>
 
