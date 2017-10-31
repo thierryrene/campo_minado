@@ -4,9 +4,7 @@ if (!isset($_SESSION)) {
 	session_start();
 }
 
-if ($_SERVER['SERVER_NAME'] == 'localhost') {
-	require_once '../composer/vendor/autoload.php';    
-}
+require_once '../vendor/autoload.php';    
 
 $linhas  = 5;
 $colunas = $linhas;
@@ -162,7 +160,9 @@ if($acao != 'click') {
 	if ($matrizComBombas[$clickLinha][$clickColuna] == null) {
 		$matrizComBombas[$clickLinha][$clickColuna] = 'x';
 		$_SESSION['matrizComBombas'] = $matrizComBombas;	
-	} elseif ($matrizComBombas[$clickLinha][$clickColuna] != $bomba) {
+	} 
+	
+	if ($matrizComBombas[$clickLinha][$clickColuna] != $bomba) {
 		$matrizComBombas[$clickLinha][$clickColuna] = $matrizComBombas[$clickLinha][$clickColuna];
 		$_SESSION['matrizComBombas'] = $matrizComBombas;				
 	}						
@@ -226,13 +226,16 @@ if($acao != 'click') {
 						 	// contador de blocos nulos
 						 	if ($coluna == null && $coluna != $bomba) {
 						 		$contadorDaVitoria++;
-						 		$fim = ($contadorDaVitoria <= 0 ? true : false);
 						 	}		
-
+							
+							$fim = ($contadorDaVitoria <= 0 ? true : false);
+							
 							if (!$acao) {
+						 		
 						 		$tdColor = 'grey';
 								$text = 0;
-						 	} else {
+								
+							} else {
 						 		
 						 		// if ($coluna == 'x') {
 						 		// 	$tdColor = 'transparent';
@@ -247,22 +250,23 @@ if($acao != 'click') {
 						 		
 						 		if ($coluna == 'x') {
 						 			$tdColor = 'transparent';
-						 			$coluna = '';
-						 		} elseif ($coluna != null && $coluna <= $bombas && $coluna != $bomba) {
-						 			$tdColor = 'transparent';
-						 			$text = '10px';
-						 		} else {
-						 			$tdColor = 'grey';
-						 			$text = 0;
-						 		}						 		
+						 		} 
+						 		
+						 		// if ($coluna != $bomba && gettype($coluna) != string) {
+						 		// 	$tdColor = 'transparent';
+						 		// 	$text = '10px';
+						 		// } 	
+						 		
+					 			// $tdColor = 'grey';
+					 			// $text = 0;
 
 							 	if ($clickBomba || $fim) {
 						 			$tdColor = 'transparent';
 						 			$text = '10px';
 							 	}
 
-						 	}	
-
+						 	}
+						 	
 						 	echo "<td style='background-color: {$tdColor};font-size: {$text};' onclick='javascript: window.location=\"mine_rebuild_2.php?acao=click&linha={$l}&coluna={$c}\"';'>{$coluna}</td>";	
 
 						}
@@ -301,7 +305,7 @@ if ($_REQUEST['destroy'] == 1) {
 	session_destroy();
 }
 
-r($matrizComBombas, $clickBomba, $fim);
+r($contadorDaVitoria, $matrizComBombas, $clickBomba, $fim);
 
 ?>
 
