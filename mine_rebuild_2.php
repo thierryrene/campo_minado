@@ -8,9 +8,9 @@ if ($_SERVER['SERVER_NAME'] == 'localhost') {
 	require_once '../composer/vendor/autoload.php';    
 }
 
-$linhas  = 5;
+$linhas  = 10;
 $colunas = $linhas;
-$bombas = 3;
+$bombas = 10;
 $bomba = '@';
 $totalCelulas = $linhas * $colunas;
 
@@ -174,7 +174,7 @@ if($acao != 'click') {
 <body>
 
 	<div style="text-align: center;">
-		<h1>Mines!</h1>				
+		<!-- <h1>Mines!</h1>				 -->
 	</div>
 
 	<div style="margin:auto;" align="center">
@@ -211,7 +211,10 @@ if($acao != 'click') {
 					$clickBomba = true;						
 				} else {
 					$clickBomba = false;
-				}			
+				}
+
+				// contador da vitória
+				$contadorDaVitoria = 0;		
 
 				// matriz apresentada no front
 				foreach ($matrizComBombas as $l => $linha) {
@@ -235,18 +238,18 @@ if($acao != 'click') {
 							if (!$acao) {
 						 		$tdColor = 'grey';
 								$text = 0;
-						 	} else {						 		
-						 		if ( gettype($coluna) == string && $coluna != $bomba) {
+						 	} else {
+						 		if ($coluna == 'x') {
+					 				$tdColor = 'transparent';
+						 			$coluna = '';
+						 		} 
+						 		elseif (gettype($coluna) == string && $coluna != $bomba) {
 							 		$tdColor = 'transparent';
 							 		$text = '10px';
 							 	} else {
 							 		$tdColor = 'grey';
 							 		$text = 0;
 							 	}
-							 	if ($coluna == 'x') {
-					 				$tdColor = 'transparent';
-						 			$coluna = '';
-						 		}
 							 	if ($clickBomba || $fim) {
 						 			$tdColor = 'transparent';
 						 			$text = '10px';
