@@ -1,5 +1,15 @@
 <?php
 
+$x = 1;
+
+$a = gettype($x);
+
+var_dump($a);
+
+exit;
+
+
+
 if (!isset($_SESSION)) {
 	session_start();
 }
@@ -147,7 +157,8 @@ if($acao != 'click') {
 	$_SESSION['matrizComBombas'] = $matrizComBombas;
 
 } else {
-
+	
+	// resgate da matriz na sessão
 	$matrizComBombas = $_SESSION['matrizComBombas'];
 
 	// capturamos o valor do click				
@@ -157,13 +168,13 @@ if($acao != 'click') {
 	$clickBomba = ($clickMouse == $bomba && $acao ? true : false);	
 
 	// marcamos o bloco clicado com 'x' se ação estiver setada e o bloco for direfente de bomba
-	if ($matrizComBombas[$clickLinha][$clickColuna] == null) {
+	if ($clickMouse == null) {
 		$matrizComBombas[$clickLinha][$clickColuna] = 'x';
 		$_SESSION['matrizComBombas'] = $matrizComBombas;	
-	} 
+	}
 	
-	if ($matrizComBombas[$clickLinha][$clickColuna] != $bomba) {
-		$matrizComBombas[$clickLinha][$clickColuna] = $matrizComBombas[$clickLinha][$clickColuna];
+	if ($clickMouse != $bomba) {
+		$matrizComBombas[$clickLinha][$clickColuna] = (string) $matrizComBombas[$clickLinha][$clickColuna];
 		$_SESSION['matrizComBombas'] = $matrizComBombas;				
 	}						
 
@@ -202,7 +213,7 @@ if($acao != 'click') {
 			<br>
 			<br>	
 			<a href="mine_rebuild_2.php" style="padding: 8px 12px; background-color: green; color: snow; border: #424242 solid 1px; text-decoration: none;">NEW</a>
-			<!-- <a href="mine_rebuild_2.php?destroy=1" style="padding: 8px 12px; background-color: crimson; color: snow; border: #424242 solid 1px; text-decoration: none;">DESTROY SESSION</a> -->
+			 <a href="mine_rebuild_2.php?destroy=1" style="padding: 8px 12px; background-color: crimson; color: snow; border: #424242 solid 1px; text-decoration: none;">DESTROY SESSION</a>
 			<br>
 			<br>
 		</div>
@@ -211,10 +222,8 @@ if($acao != 'click') {
 			
 			<?php
 
-				
-
 				// contador da vitória
-				$contadorDaVitoria = 0;		
+				$contadorDaVitoria = 0;
 
 				// matriz apresentada no front
 				foreach ($matrizComBombas as $l => $linha) {
@@ -222,59 +231,46 @@ if($acao != 'click') {
 					echo "<tr>";
 
 						 foreach ($linha as $c => $coluna) {
-
-						 	// contador de blocos nulos
-						 	if ($coluna == null && $coluna != $bomba) {
+						 	
+						 	if ($coluna == null) {
 						 		$contadorDaVitoria++;
-						 	}		
-							
-							$fim = ($contadorDaVitoria <= 0 ? true : false);
-							
-							if (!$acao) {
+						 	}
+						 	
+						 	if ($contadorDaVitoria <= 0) {
+						 		$fim = true;
+						 	} else {
+						 		$fim = false;
+						 	}
+						 	
+						 	if (!$acao) {
 						 		$tdColor = 'grey';
-								$text = 0;
-							} else {
-						 		
-						 		// if ($coluna == 'x') {
-						 		// 	$tdColor = 'transparent';
-						 		// 	$coluna = '';
-						 		// } elseif ( gettype($coluna) == 1 && $coluna != $bomba ) {
-						 		// 	$tdColor = 'transparent';
-						 		// 	$text = '10px';
-						 		// } else {
-						 		// 	$tdColor = 'grey';
-						 		// 	$text = 0;
-						 		// }
+						 		$text = 0;
+						 	} else {
 						 		
 						 		if ($coluna == 'x') {
 						 			$tdColor = 'transparent';
-						 		} else {
-						 			$tdColor = 'grey';
-						 			$text = 0;
-						 		}
-						 		
-						 		// if ($coluna != $bomba && gettype($coluna) != string) {
-						 		// 	$tdColor = 'transparent';
-						 		// 	$text = '10px';
-						 		// } 	
-						 		
-					 			// $tdColor = 'grey';
-					 			// $text = 0;
-
-							 	if ($clickBomba || $fim) {
+						 			$coluna = '';
+						 		} elseif (gettype($coluna) == string && $coluna != $bomba) {
 						 			$tdColor = 'transparent';
 						 			$text = '10px';
+						 		}
+						 		
+							 	if ($clickBomba || $fim) {
+							 		$tdColor = 'transparent';
+							 		$text = '10px';
 							 	}
-
+							 	
 						 	}
 						 	
-						 	echo "<td style='background-color: {$tdColor};font-size: {$text};' onclick='javascript: window.location=\"mine_rebuild_2.php?acao=click&linha={$l}&coluna={$c}\"';'>{$coluna}</td>";	
-
+						 	echo "<td style='background-color: {$tdColor};font-size: {$text};' onclick='javascript: window.location=\"mine_rebuild_2.php?acao=click&linha={$l}&coluna={$c}\"';'>{$coluna}</td>";
+						 	
 						}
-
+						
 					echo "</tr>";
-
-				}			
+					
+				}		
+				
+				r($contadorDaVitoria);
 
 				// mensagem WINNER or LOSER
 				if ($clickBomba) {
@@ -306,7 +302,7 @@ if ($_REQUEST['destroy'] == 1) {
 	session_destroy();
 }
 
-r($contadorDaVitoria, $matrizComBombas, $clickBomba, $fim);
+r($clickMouse, $matrizComBombas, $clickBomba, $fim);
 
 ?>
 
