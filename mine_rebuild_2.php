@@ -8,9 +8,9 @@ if ($_SERVER['SERVER_NAME'] == 'localhost') {
 	require_once '../composer/vendor/autoload.php';    
 }
 
-$linhas  = 10;
+$linhas  = 5;
 $colunas = $linhas;
-$bombas = 10;
+$bombas = 3;
 $bomba = '@';
 $totalCelulas = $linhas * $colunas;
 
@@ -152,6 +152,25 @@ if($acao != 'click') {
 
 	$matrizComBombas = $_SESSION['matrizComBombas'];
 
+	// capturamos o valor do click				
+	$clickMouse = $matrizComBombas[$clickLinha][$clickColuna];
+
+	// condição que encerra jogo aoclicar na bomba
+	$clickBomba = ($clickMouse == $bomba && $acao ? true : false);	
+
+	// marcamos o bloco clicado com 'x' se ação estiver setada e o bloco for direfente de bomba
+	if ($matrizComBombas[$clickLinha][$clickColuna] == null) {
+		$matrizComBombas[$clickLinha][$clickColuna] = 'x';
+		$_SESSION['matrizComBombas'] = $matrizComBombas;	
+	} elseif ($matrizComBombas[$clickLinha][$clickColuna] != $bomba) {
+		$matrizComBombas[$clickLinha][$clickColuna] = $matrizComBombas[$clickLinha][$clickColuna];
+		$_SESSION['matrizComBombas'] = $matrizComBombas;				
+	}						
+
+	if ($matrizComBombas[$clickLinha][$clickColuna] == null || $matrizComBombas[$clickLinha][$clickColuna] != $bomba) {
+		echo "<script>console.log('clickMouse: {$matrizComBombas[$clickLinha][$clickColuna]}.');</script>";
+	}
+
 }
 
 ?>
@@ -192,26 +211,7 @@ if($acao != 'click') {
 			
 			<?php
 
-				// capturamos o valor do click				
-				$clickMouse = $matrizComBombas[$clickLinha][$clickColuna];
-
-				// marcamos o bloco clicado com 'x' se ação estiver setada e o bloco for direfente de bomba
-				if (isset($acao) && $matrizComBombas[$clickLinha][$clickColuna] == null) {
-					$matrizComBombas[$clickLinha][$clickColuna] = 'x';
-					$_SESSION['matrizComBombas'] = $matrizComBombas;				
-				}
-
-				if (isset($acao) && $clickMouse <= $bombas) {
-					$matrizComBombas[$clickLinha][$clickColuna] = (string) $matrizComBombas[$clickLinha][$clickColuna];
-					$_SESSION['matrizComBombas'] = $matrizComBombas;				
-				}						
-
-				// condição que encerra jogo aoclicar na bomba
-				if ($clickMouse == $bomba && $acao) {		
-					$clickBomba = true;						
-				} else {
-					$clickBomba = false;
-				}
+				
 
 				// contador da vitória
 				$contadorDaVitoria = 0;		
@@ -224,45 +224,50 @@ if($acao != 'click') {
 						 foreach ($linha as $c => $coluna) {
 
 						 	// contador de blocos nulos
-						 	if ($coluna == null && $coluna != $bomba) {						 		
+						 	if ($coluna == null && $coluna != $bomba) {
 						 		$contadorDaVitoria++;
-						 	}
-
-					 		// condicao da vitória
-							if ($contadorDaVitoria <= 0) {
-								$fim = true;				
-							} else {
-								$fim = false;
-							}
+						 		$fim = ($contadorDaVitoria <= 0 ? true : false);
+						 	}		
 
 							if (!$acao) {
 						 		$tdColor = 'grey';
 								$text = 0;
 						 	} else {
+						 		
+						 		// if ($coluna == 'x') {
+						 		// 	$tdColor = 'transparent';
+						 		// 	$coluna = '';
+						 		// } elseif ( gettype($coluna) == 1 && $coluna != $bomba ) {
+						 		// 	$tdColor = 'transparent';
+						 		// 	$text = '10px';
+						 		// } else {
+						 		// 	$tdColor = 'grey';
+						 		// 	$text = 0;
+						 		// }
+						 		
 						 		if ($coluna == 'x') {
-					 				$tdColor = 'transparent';
+						 			$tdColor = 'transparent';
 						 			$coluna = '';
-						 		} 
-						 		elseif (gettype($coluna) == string && $coluna != $bomba) {
-							 		$tdColor = 'transparent';
-							 		$text = '10px';
-							 	} else {
-							 		$tdColor = 'grey';
-							 		$text = 0;
-							 	}
+						 		} elseif ($coluna != null && $coluna <= $bombas && $coluna != $bomba) {
+						 			$tdColor = 'transparent';
+						 			$text = '10px';
+						 		} else {
+						 			$tdColor = 'grey';
+						 			$text = 0;
+						 		}						 		
+
 							 	if ($clickBomba || $fim) {
 						 			$tdColor = 'transparent';
 						 			$text = '10px';
 							 	}
+
 						 	}	
 
 						 	echo "<td style='background-color: {$tdColor};font-size: {$text};' onclick='javascript: window.location=\"mine_rebuild_2.php?acao=click&linha={$l}&coluna={$c}\"';'>{$coluna}</td>";	
 
-						 }
+						}
 
-					echo "</tr>";	
-
-
+					echo "</tr>";
 
 				}			
 
@@ -296,7 +301,7 @@ if ($_REQUEST['destroy'] == 1) {
 	session_destroy();
 }
 
-r($contadorDaVitoria, $fim, $clickBomba, $matrizComBombas);
+r($matrizComBombas, $clickBomba, $fim);
 
 ?>
 
