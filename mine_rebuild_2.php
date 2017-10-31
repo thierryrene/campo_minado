@@ -231,10 +231,8 @@ if($acao != 'click') {
 							$fim = ($contadorDaVitoria <= 0 ? true : false);
 							
 							if (!$acao) {
-						 		
 						 		$tdColor = 'grey';
 								$text = 0;
-								
 							} else {
 						 		
 						 		// if ($coluna == 'x') {
@@ -250,7 +248,10 @@ if($acao != 'click') {
 						 		
 						 		if ($coluna == 'x') {
 						 			$tdColor = 'transparent';
-						 		} 
+						 		} else {
+						 			$tdColor = 'grey';
+						 			$text = 0;
+						 		}
 						 		
 						 		// if ($coluna != $bomba && gettype($coluna) != string) {
 						 		// 	$tdColor = 'transparent';
