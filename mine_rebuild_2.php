@@ -4,7 +4,7 @@ if (!isset($_SESSION)) {
 	session_start();
 }
 
-require_once '../vendor/autoload.php';    
+require_once '../composer/vendor/autoload.php';    
 
 $linhas  = 5;
 $colunas = $linhas;
@@ -213,6 +213,8 @@ if(!isset($acao)) {
 			
 			<?php
 
+				if ($clickMouse == $bomba) $clickBomba == true;
+
 				// contador da vitória
 				$contadorDaVitoria = 0;
 
@@ -240,7 +242,7 @@ if(!isset($acao)) {
 						 		$text = 0;
 						 	}
 						 	
-						 	if (is_string($coluna)) {
+						 	if (is_string($coluna) && $coluna != $bomba) {
 						 		$tdColor = 'transparent';
 						 		$text = '10px';
 						 	} else {
