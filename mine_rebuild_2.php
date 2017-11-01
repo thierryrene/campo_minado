@@ -6,9 +6,9 @@ if (!isset($_SESSION)) {
 
 require_once '../vendor/autoload.php';    
 
-$linhas  = 8;
+$linhas  = 5;
 $colunas = $linhas;
-$bombas = 8;
+$bombas = 1;
 $bomba = '@';
 $totalCelulas = $linhas * $colunas;
 
@@ -183,6 +183,8 @@ if(!isset($acao)) {
 	<meta charset="UTF-8">
 	<title>Mines!</title>
 
+	<script src="https://code.jquery.com/jquery-3.2.1.js" integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE=" crossorigin="anonymous"></script>
+
 	<style type="text/css">		
 		* {
 			font-family: arial;
@@ -191,6 +193,14 @@ if(!isset($acao)) {
 			padding: 20px;
 		}
 	</style>
+
+
+	<script type="text/javascript">
+
+
+
+	</script>
+
 </head>
 <body>
 
@@ -251,10 +261,11 @@ if(!isset($acao)) {
 						 	if ($fim || $clickBomba) {
 						 		$tdColor = 'transparent';
 						 		$text = '10px';
+						 		echo "<td style='background-color:{$tdColor};font-size:{$text};'>{$coluna}</td>";
+						 	} else {
+						 		echo "<td style='background-color: {$tdColor};font-size: {$text};' onclick='javascript: window.location=\"mine_rebuild_2.php?acao=click&linha={$l}&coluna={$c}\"';'>{$coluna}</td>";
 						 	}
-						 	
-						 	echo "<td style='background-color: {$tdColor};font-size: {$text};' onclick='javascript: window.location=\"mine_rebuild_2.php?acao=click&linha={$l}&coluna={$c}\"';'>{$coluna}</td>";
-						 	
+
 						}
 						
 					echo "</tr>";
@@ -262,11 +273,11 @@ if(!isset($acao)) {
 				}		
 				
 				// condição que encerra jogo se clicar na bomba
-				if ($clickMouse == $bomba) $clickBomba = true;
-				if ($contadorDaVitoria <= 0) $fim = true;
-				
-				
-				
+				$clickBomba = ($clickMouse == $bomba ? true : false);
+
+				// condição para finalizar os blocos se o contador for igual a 0
+				$fim = ($contadorDaVitoria <= 0 ? true : false); 
+
 				// r($contadorDaVitoria);
 
 				// mensagem WINNER or LOSER
@@ -275,6 +286,7 @@ if(!isset($acao)) {
 						  <h3 align='center' style='color: crimson;'>YOU LOSE!</h3>";
 				} elseif ($fim) {
 					echo "<h3 align='center' style='color: green;'>YOU WIN!</h3>";
+					echo '<img width="200" src="https://media.giphy.com/media/DpB9NBjny7jF1pd0yt2/giphy.gif" alt=""><br><br>';
 				}				
 				
 			?>
