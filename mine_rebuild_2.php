@@ -1,15 +1,5 @@
 <?php
 
-$x = 1;
-
-$a = gettype($x);
-
-var_dump($a);
-
-exit;
-
-
-
 if (!isset($_SESSION)) {
 	session_start();
 }
@@ -31,7 +21,7 @@ $emptyBlock		= !empty($_REQUEST['empty'])	? $_REQUEST['empty']	: null;
 
 $contadorCelulas = 1;
 
-if($acao != 'click') {
+if(!isset($acao)) {
 
 	$matrizInicial = array();				
 
@@ -152,6 +142,7 @@ if($acao != 'click') {
 			}		
 			
 		}
+		
 	}
 
 	$_SESSION['matrizComBombas'] = $matrizComBombas;
@@ -227,39 +218,39 @@ if($acao != 'click') {
 
 				// matriz apresentada no front
 				foreach ($matrizComBombas as $l => $linha) {
-
+					
 					echo "<tr>";
-
+					
 						 foreach ($linha as $c => $coluna) {
 						 	
 						 	if ($coluna == null) {
 						 		$contadorDaVitoria++;
 						 	}
 						 	
-						 	if ($contadorDaVitoria <= 0) {
-						 		$fim = true;
-						 	} else {
-						 		$fim = false;
-						 	}
-						 	
-						 	if (!$acao) {
+						 	if (!$acao && $coluna) {
 						 		$tdColor = 'grey';
 						 		$text = 0;
+						 	}
+						 	
+						 	if ($coluna == 'x') {
+						 		$coluna = '';
+						 		$tdColor = 'transparent';
 						 	} else {
-						 		
-						 		if ($coluna == 'x') {
-						 			$tdColor = 'transparent';
-						 			$coluna = '';
-						 		} elseif (gettype($coluna) == string && $coluna != $bomba) {
-						 			$tdColor = 'transparent';
-						 			$text = '10px';
-						 		}
-						 		
-							 	if ($clickBomba || $fim) {
-							 		$tdColor = 'transparent';
-							 		$text = '10px';
-							 	}
-							 	
+						 		$tdColor = 'grey';
+						 		$text = 0;
+						 	}
+						 	
+						 	if (is_string($coluna)) {
+						 		$tdColor = 'transparent';
+						 		$text = '10px';
+						 	} else {
+						 		$tdColor = 'grey';
+						 		$text = 0;
+						 	}
+						 	
+						 	if ($fim || $clickBomba) {
+						 		$tdColor = 'transparent';
+						 		$text = '10px';
 						 	}
 						 	
 						 	echo "<td style='background-color: {$tdColor};font-size: {$text};' onclick='javascript: window.location=\"mine_rebuild_2.php?acao=click&linha={$l}&coluna={$c}\"';'>{$coluna}</td>";
