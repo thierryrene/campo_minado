@@ -4,11 +4,11 @@ if (!isset($_SESSION)) {
 	session_start();
 }
 
-require_once '../composer/vendor/autoload.php';    
+require_once '../vendor/autoload.php';    
 
-$linhas  = 5;
+$linhas  = 8;
 $colunas = $linhas;
-$bombas = 3;
+$bombas = 8;
 $bomba = '@';
 $totalCelulas = $linhas * $colunas;
 
@@ -195,7 +195,7 @@ if(!isset($acao)) {
 <body>
 
 	<div style="text-align: center;">
-		<!-- <h1>Mines!</h1>				 -->
+		 <!--<h1>Mines!</h1>				 -->
 	</div>
 
 	<div style="margin:auto;" align="center">
@@ -204,7 +204,7 @@ if(!isset($acao)) {
 			<br>
 			<br>	
 			<a href="mine_rebuild_2.php" style="padding: 8px 12px; background-color: green; color: snow; border: #424242 solid 1px; text-decoration: none;">NEW</a>
-			 <a href="mine_rebuild_2.php?destroy=1" style="padding: 8px 12px; background-color: crimson; color: snow; border: #424242 solid 1px; text-decoration: none;">DESTROY SESSION</a>
+			 <!--<a href="mine_rebuild_2.php?destroy=1" style="padding: 8px 12px; background-color: crimson; color: snow; border: #424242 solid 1px; text-decoration: none;">DESTROY SESSION</a>-->
 			<br>
 			<br>
 		</div>
@@ -212,9 +212,7 @@ if(!isset($acao)) {
 		<table style="margin: auto;" border="1">
 			
 			<?php
-
-				if ($clickMouse == $bomba) $clickBomba == true;
-
+				
 				// contador da vitória
 				$contadorDaVitoria = 0;
 
@@ -225,7 +223,7 @@ if(!isset($acao)) {
 					
 						 foreach ($linha as $c => $coluna) {
 						 	
-						 	if ($coluna == null) {
+						 	if ($coluna == null || is_int($coluna)) {
 						 		$contadorDaVitoria++;
 						 	}
 						 	
@@ -263,7 +261,13 @@ if(!isset($acao)) {
 					
 				}		
 				
-				r($contadorDaVitoria);
+				// condição que encerra jogo se clicar na bomba
+				if ($clickMouse == $bomba) $clickBomba = true;
+				if ($contadorDaVitoria <= 0) $fim = true;
+				
+				
+				
+				// r($contadorDaVitoria);
 
 				// mensagem WINNER or LOSER
 				if ($clickBomba) {
@@ -295,7 +299,7 @@ if ($_REQUEST['destroy'] == 1) {
 	session_destroy();
 }
 
-r($clickMouse, $matrizComBombas, $clickBomba, $fim);
+// r($clickMouse, $matrizComBombas, $clickBomba, $fim);
 
 ?>
 
