@@ -1,0 +1,22 @@
+{
+    "name": "campo/minado",
+    "description": "campo minado",
+    "type": "project",
+    "require-dev": {
+        "phpunit/phpunit": "4.0"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "mikaellemos033",
+            "email": "mikaellemos033@gmai.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "CampoMinado\\": "src/"
+        }
+    }
+}
